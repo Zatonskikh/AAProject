@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="default_list_element_end_padding">16dp</dimen>
+    <dimen name="default_list_element_start_padding">16dp</dimen>
+    <dimen name="default_list_element_margin">16dp</dimen>
+    <dimen name="social_ic_margin">4dp</dimen>
+    <dimen name="default_button_margin">12dp</dimen>
+    <dimen name="icon_margin">50dp</dimen>
+    <dimen name="default_pdding_bottom">16dp</dimen>
+    <dimen name="default_padding_top">16dp</dimen>
+    <dimen name="icon_padding">50dp</dimen>
+    <dimen name="default_text_size">16sp</dimen>
+    <dimen name="small_text_size">12sp</dimen>
+    <dimen name="big_text_size">20sp</dimen>
+    <dimen name="toolbar_height">40dp</dimen>
+    <dimen name="default_edit_text_margin">12dp</dimen>
+    <dimen name="button_width">100dp</dimen>
+    <dimen name="button_height">35dp</dimen>
+    <dimen name="image_height">215dp</dimen>
+    <dimen name="social_padding">100dp</dimen>
+</resources>
