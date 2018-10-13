@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -16,17 +15,10 @@
         android:background="@color/dark"
         android:clickable="true"
         android:focusable="true"
-        android:focusableInTouchMode="true">
-
-        <android.support.v7.widget.AppCompatTextView
-            android:id="@+id/toolbar_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="start"
-            android:text="@string/user_name"
-            android:textColor="@color/white"
-            android:textSize="@dimen/default_text_size" />
-
+        android:focusableInTouchMode="true"
+        app:title="@string/user_name"
+        app:titleTextColor="@color/white"
+        app:titleTextAppearance="@dimen/default_text_size">
     </android.support.v7.widget.Toolbar>
 
     <android.support.v7.widget.AppCompatImageView
@@ -34,7 +26,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/image_height"
         android:scaleType="centerCrop"
-        android:src="@drawable/moon_aa" />
+        />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -144,74 +136,54 @@
                 android:paddingTop="@dimen/default_padding_top"
                 android:textColor="@color/black"
                 android:textSize="@dimen/default_text_size"
-                android:hint="@string/default_edit_text_message" />
+                android:hint="@string/default_edit_text_message"
+                android:maxLength="200"/>
 
             <android.support.v7.widget.AppCompatButton
                 android:id="@+id/send_button"
+                style="@style/ButtonTheme"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
                 android:layout_marginEnd="@dimen/default_list_element_margin"
-                android:background="@color/transparent"
                 android:layout_marginTop="@dimen/default_button_margin"
                 android:text="@string/send_message"
-                android:textColor="@color/divider_color"
-                android:textColorHint="@color/black"
-                android:textSize="@dimen/default_text_size"
-                android:textStyle="bold"
-                android:textAlignment="center" />
+              />
 
             <LinearLayout
                 android:id="@+id/social"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/default_list_element_margin"
-                android:layout_marginStart="@dimen/default_list_element_margin"
                 android:orientation="horizontal"
-                android:paddingBottom="@dimen/default_pdding_bottom"
-                android:paddingEnd="@dimen/social_padding"
-                android:paddingStart="@dimen/social_padding"
-                android:paddingTop="@dimen/default_padding_top">
+                android:layout_gravity="center_horizontal"
+               >
 
                 <android.support.v7.widget.AppCompatImageView
                     android:id="@+id/telegram"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/social_ic_margin"
-                    android:layout_weight="1"
-                    android:clickable="true"
                     app:srcCompat="@drawable/ic_telegram"
-                    android:focusable="true"
                     style="@style/Widget.AppCompat.ActionButton"/>
 
                 <android.support.v7.widget.AppCompatImageView
                     android:id="@+id/instagram"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/social_ic_margin"
-                    android:layout_marginStart="@dimen/social_ic_margin"
-                    android:layout_weight="1"
-                    android:clickable="true"
                     app:srcCompat="@drawable/ic_instagram"
-                    android:focusable="true"
                     style="@style/Widget.AppCompat.ActionButton"/>
 
                 <android.support.v7.widget.AppCompatImageView
                     android:id="@+id/twitter"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/social_ic_margin"
-                    android:layout_weight="1"
-                    android:clickable="true"
                     app:srcCompat="@drawable/ic_twitter"
-                    android:focusable="true"
                     style="@style/Widget.AppCompat.ActionButton"/>
             </LinearLayout>
 
             <android.support.v7.widget.AppCompatTextView
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-
+                android:layout_gravity="center_horizontal"
                 android:text="@string/copyright"
                 android:textAlignment="center"/>
         </LinearLayout>

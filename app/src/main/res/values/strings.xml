@@ -1,13 +1,16 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">AAFirstApp</string>
     <string name="key_info">xXMyKoolKompamyXx</string>
     <string name="user_name">Atticus Fimch</string>
     <string name="user_info">"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."</string>
-    <string name="default_edit_text_message">Enter a message...</string>
+    <string name="default_edit_text_message">Enter a message…</string>
     <string name="send_message">SEND MESSAGE</string>
     <string name="atticus_fimch">Atticus Fimch</string>
     <string name="web_toast">No app can open this link</string>
     <string name="no_text">No text</string>
     <string name="no_app_to_send">No app to send email</string>
     <string name="copyright">© 2018 atticus_fimch</string>
+    <string name="default_text">default text</string>
+    <string name="default_text_body" tools:ignore="Typos">default_text default_text default_text default_text default_text default_text default_text default_text default_text</string>
+    <string name="default_data">dd.MM.yyyy</string>
 </resources>

@@ -1,9 +1,8 @@
-package com.example.sysoy.aafirstapp;
+package com.example.sysoy.aafirstapp.presentation.about;
 
 import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
-import android.content.res.Configuration;
 import android.graphics.Rect;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
@@ -17,7 +16,10 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity {
+import com.bumptech.glide.Glide;
+import com.example.sysoy.aafirstapp.R;
+
+public class AboutActivity extends AppCompatActivity {
 
     private boolean isFirstTime = true;
 
@@ -30,8 +32,13 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_about);
         initScreen();
+    }
+
+    public static void start(Context contex){
+        Intent starter = new Intent(contex, AboutActivity.class);
+        contex.startActivity(starter);
     }
 
     private void initScreen() {
@@ -42,6 +49,11 @@ public class MainActivity extends AppCompatActivity {
         AppCompatButton sendButton = findViewById(R.id.send_button);
         image = findViewById(R.id.profile_image);
         root = findViewById(R.id.root);
+
+        Glide
+                .with(this)
+                .load(R.drawable.moon_aa)
+                .into(image);
 
         sendButton.setOnClickListener(getOnClickListener());
         tg.setOnClickListener(getOnClickListener());
