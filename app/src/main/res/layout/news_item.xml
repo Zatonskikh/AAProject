@@ -75,7 +75,7 @@
         android:layout_marginBottom="@dimen/default_list_element_margin"
         android:maxLines="1"
         android:paddingTop="@dimen/padding_text"
-        android:text="@string/default_data"
+        android:text="@string/default_date"
         android:textColor="@color/grey"
         android:textSize="@dimen/default_text_size" />
 

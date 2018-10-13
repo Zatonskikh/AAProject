@@ -18,6 +18,8 @@ import java.text.DateFormat;
 import java.util.Date;
 import java.util.List;
 
+import io.reactivex.annotations.NonNull;
+
 public class NewsAdapter extends BaseAdapter {
 
     private final List<NewsItem> newsItems;
@@ -33,7 +35,6 @@ public class NewsAdapter extends BaseAdapter {
         this.newsItems = newsItems;
         this.context = context;
         inflater = LayoutInflater.from(context);
-
         RequestOptions imageOption = new RequestOptions()
                 .placeholder(R.drawable.default_news_image)
                 .fallback(R.drawable.default_news_image)
@@ -41,7 +42,23 @@ public class NewsAdapter extends BaseAdapter {
         this.imageLoader = Glide.with(context).applyDefaultRequestOptions(imageOption);
     }
 
-    private NewsItem getNewsItem(int position) {
+    private ViewHolder onCreateViewHolder(ViewGroup viewGroup){
+        return new ViewHolder(inflater.inflate(R.layout.news_item, viewGroup, false));
+    }
+
+    private void onBindViewHolder(ViewHolder holder, int position){
+        NewsItem newsItem = getNewsItem(position);
+        holder.newsCategory.setText(newsItem.getCategory().getName());
+        holder.newsHeader.setText(newsItem.getTitle());
+        holder.newsBody.setText(newsItem.getPreviewText());
+        holder.newsDate.setText(dateFormatter(newsItem.getPublishDate()));
+        imageLoader
+                .asBitmap()
+                .load(newsItem.getImageUrl())
+                .into(holder.newsImage);
+    }
+
+    public NewsItem getNewsItem(int position) {
         return newsItems.get(position);
     }
 
@@ -64,37 +81,32 @@ public class NewsAdapter extends BaseAdapter {
     public View getView(int i, View view, ViewGroup viewGroup) {
         ViewHolder holder;
         if (view == null) {
-            view = inflater.inflate(R.layout.news_item, viewGroup, false);
-            holder = new ViewHolder();
-            holder.newsCategory = view.findViewById(R.id.category);
-            holder.newsHeader = view.findViewById(R.id.header);
-            holder.newsImage = view.findViewById(R.id.news_image);
-            holder.newsBody = view.findViewById(R.id.body);
-            holder.newsDate = view.findViewById(R.id.date);
+            holder = onCreateViewHolder(viewGroup);
+            view = holder.root;
             view.setTag(holder);
         }else {
             holder = (ViewHolder) view.getTag();
         }
-
-        NewsItem newsItem = getNewsItem(i);
-
-        holder.newsCategory.setText(newsItem.getCategory().getName());
-        holder.newsHeader.setText(newsItem.getTitle());
-        holder.newsBody.setText(newsItem.getPreviewText());
-        holder.newsDate.setText(dateFormatter(newsItem.getPublishDate()));
-        //newsImage.setImageBitmap(new Bitmap.createBitmap());
-       imageLoader
-                .asBitmap()
-                .load(newsItem.getImageUrl())
-                .into(holder.newsImage);
+        onBindViewHolder(holder, i);
         return view;
     }
 
     static class ViewHolder {
-         ImageView newsImage;
+        View root;
+
+        ImageView newsImage;
         TextView newsCategory;
         TextView newsHeader;
         TextView newsBody;
         TextView newsDate;
+
+        ViewHolder(@NonNull View view){
+            this.root = view;
+            this.newsCategory = view.findViewById(R.id.category);
+            this.newsHeader = view.findViewById(R.id.header);
+            this.newsImage = view.findViewById(R.id.news_image);
+            this.newsBody = view.findViewById(R.id.body);
+            this.newsDate = view.findViewById(R.id.date);
+        }
     }
 }

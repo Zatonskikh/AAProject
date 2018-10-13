@@ -5,11 +5,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.net.Uri;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.AppCompatImageView;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.inputmethod.InputMethodManager;
@@ -34,11 +35,19 @@ public class AboutActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_about);
         initScreen();
+        initToolbar();
     }
 
     public static void start(Context contex){
         Intent starter = new Intent(contex, AboutActivity.class);
         contex.startActivity(starter);
+    }
+
+    private void initToolbar(){
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp);
+        toolbar.setNavigationOnClickListener(view -> AboutActivity.super.onBackPressed());
     }
 
     private void initScreen() {
@@ -63,13 +72,9 @@ public class AboutActivity extends AppCompatActivity {
 
         root.getViewTreeObserver()
                 .addOnGlobalLayoutListener(gll);
-        tv.setOnFocusChangeListener(new View
-                .OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View view, boolean b) {
-                if (!b && view.getId() != R.id.send_button) {
-                    hideKeyboard(view);
-                }
+        tv.setOnFocusChangeListener((view, b) -> {
+            if (!b && view.getId() != R.id.send_button) {
+                hideKeyboard(view);
             }
         });
     }
@@ -99,23 +104,20 @@ public class AboutActivity extends AppCompatActivity {
     };
 
     private View.OnClickListener getOnClickListener() {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                switch (view.getId()) {
-                    case R.id.telegram:
-                        openApp("telegram");
-                        break;
-                    case R.id.instagram:
-                        openApp("instagram");
-                        break;
-                    case R.id.twitter:
-                        openApp("twitter");
-                        break;
-                    case R.id.send_button:
-                        openEmailApp();
-                        break;
-                }
+        return view -> {
+            switch (view.getId()) {
+                case R.id.telegram:
+                    openApp("telegram");
+                    break;
+                case R.id.instagram:
+                    openApp("instagram");
+                    break;
+                case R.id.twitter:
+                    openApp("twitter");
+                    break;
+                case R.id.send_button:
+                    openEmailApp();
+                    break;
             }
         };
     }
