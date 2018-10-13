@@ -1,8 +1,10 @@
 package com.example.sysoy.aafirstapp.presentation.news;
 
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -33,6 +35,9 @@ public class RecyclerNewsActivity extends AppCompatActivity {
         rw.setAdapter( new NewsRecyclerAdapter(this,
                 DataUtils.generateNews(), clickListener));
         rw.setLayoutManager(new LinearLayoutManager(this));
+        if(this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
+            rw.setLayoutManager(new GridLayoutManager(this, 2));
+        }
     }
 
     private void initToolbar(){
