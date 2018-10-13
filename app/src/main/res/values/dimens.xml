@@ -21,4 +21,5 @@
     <dimen name="news_item_height">190dp</dimen>
     <dimen name="big_text">20sp</dimen>
     <dimen name="padding_text">8dp</dimen>
+    <dimen name="small_padding">5dp</dimen>
 </resources>

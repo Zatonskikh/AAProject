@@ -1,4 +1,4 @@
-package com.example.sysoy.aafirstapp.presentation.news;
+package com.example.sysoy.aafirstapp.presentation.news.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -30,7 +30,7 @@ public class NewsAdapter extends BaseAdapter {
         return DateFormat.getDateInstance().format(date);
     }
 
-    NewsAdapter(Context context, List<NewsItem> newsItems) {
+    public NewsAdapter(Context context, List<NewsItem> newsItems) {
         this.newsItems = newsItems;
         inflater = LayoutInflater.from(context);
         RequestOptions imageOption = new RequestOptions()

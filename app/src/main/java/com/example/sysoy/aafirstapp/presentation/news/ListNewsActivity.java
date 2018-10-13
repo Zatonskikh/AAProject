@@ -8,6 +8,7 @@ import android.widget.ListView;
 
 import com.example.sysoy.aafirstapp.R;
 import com.example.sysoy.aafirstapp.models.NewsItem;
+import com.example.sysoy.aafirstapp.presentation.news.adapter.NewsAdapter;
 import com.example.sysoy.aafirstapp.utils.DataUtils;
 
 import java.text.DateFormat;

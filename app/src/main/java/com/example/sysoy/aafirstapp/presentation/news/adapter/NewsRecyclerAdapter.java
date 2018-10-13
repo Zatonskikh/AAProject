@@ -1,4 +1,4 @@
-package com.example.sysoy.aafirstapp.presentation.news;
+package com.example.sysoy.aafirstapp.presentation.news.adapter;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -36,7 +36,7 @@ public class NewsRecyclerAdapter extends Adapter<NewsRecyclerAdapter.ViewHolder>
         return DateFormat.getDateInstance().format(date);
     }
 
-    NewsRecyclerAdapter(@NonNull Context context, @NonNull List<NewsItem> newsItems, @Nullable OnItemClickListener clickListener) {
+    public NewsRecyclerAdapter(@NonNull Context context, @NonNull List<NewsItem> newsItems, @Nullable OnItemClickListener clickListener) {
         this.newsItems = newsItems;
         this.clickListener = clickListener;
         inflater = LayoutInflater.from(context);
@@ -54,6 +54,7 @@ public class NewsRecyclerAdapter extends Adapter<NewsRecyclerAdapter.ViewHolder>
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+        getItemViewType(i);
         return new ViewHolder(inflater.inflate(R.layout.news_item, viewGroup, false), clickListener);
     }
 

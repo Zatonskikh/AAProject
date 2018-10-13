@@ -11,7 +11,6 @@ import android.support.v7.widget.Toolbar;
 
 import com.bumptech.glide.Glide;
 import com.example.sysoy.aafirstapp.R;
-import com.example.sysoy.aafirstapp.presentation.about.AboutActivity;
 
 public class NewsDetailsActivity extends AppCompatActivity {
 
@@ -30,6 +29,8 @@ public class NewsDetailsActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp);
         toolbar.setNavigationOnClickListener(view -> NewsDetailsActivity.super.onBackPressed());
+        Intent intent = getIntent();
+        toolbar.setTitle(intent.getStringExtra("category").toUpperCase());
     }
 
     private void initScreen(){
@@ -37,15 +38,13 @@ public class NewsDetailsActivity extends AppCompatActivity {
         AppCompatImageView image = findViewById(R.id.news_image);
         AppCompatTextView title = findViewById(R.id.news_title);
         AppCompatTextView text = findViewById(R.id.news_text);
-        AppCompatTextView category = findViewById(R.id.news_category);
         AppCompatTextView date = findViewById(R.id.news_date);
 
         Glide.with(this)
                 .load(activityIntent.getStringExtra("url"))
                 .into(image);
         title.setText(activityIntent.getStringExtra("title"));
-        text.setText(activityIntent.getStringExtra("text"));
-        category.setText(activityIntent.getStringExtra("category"));
+        text.setText(activityIntent.getStringExtra("text").replace("\n", ""));
         date.setText(activityIntent.getStringExtra("date"));
     }
 

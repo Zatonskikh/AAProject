@@ -11,6 +11,7 @@ import android.support.v7.widget.Toolbar;
 
 import com.example.sysoy.aafirstapp.R;
 import com.example.sysoy.aafirstapp.presentation.about.AboutActivity;
+import com.example.sysoy.aafirstapp.presentation.news.adapter.NewsRecyclerAdapter;
 import com.example.sysoy.aafirstapp.utils.DataUtils;
 
 import java.text.DateFormat;
