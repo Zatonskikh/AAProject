@@ -23,7 +23,6 @@ import io.reactivex.annotations.NonNull;
 public class NewsAdapter extends BaseAdapter {
 
     private final List<NewsItem> newsItems;
-    private final Context context;
     private final LayoutInflater inflater;
     private final RequestManager imageLoader;
 
@@ -33,7 +32,6 @@ public class NewsAdapter extends BaseAdapter {
 
     NewsAdapter(Context context, List<NewsItem> newsItems) {
         this.newsItems = newsItems;
-        this.context = context;
         inflater = LayoutInflater.from(context);
         RequestOptions imageOption = new RequestOptions()
                 .placeholder(R.drawable.default_news_image)

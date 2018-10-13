@@ -5,7 +5,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".presentation.news.ListNewsActivity">
+    tools:context=".presentation.news.RecyclerNewsActivity">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
@@ -29,11 +29,11 @@
             />
     </android.support.v7.widget.Toolbar>
 
-    <ListView
-        android:id="@+id/lw"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rw"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:listitem="@layout/news_item"
-        android:layout_margin="6dp"/>
+        />
 
 </LinearLayout>

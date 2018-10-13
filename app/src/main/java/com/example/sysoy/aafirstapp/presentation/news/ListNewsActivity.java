@@ -4,8 +4,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.example.sysoy.aafirstapp.R;
@@ -20,7 +18,7 @@ import static com.example.sysoy.aafirstapp.presentation.about.AboutActivity.star
 public class ListNewsActivity extends AppCompatActivity {
 
     private void initScreen(){
-        ListView rw = findViewById(R.id.rw);
+        ListView rw = findViewById(R.id.lw);
         rw.setAdapter( new NewsAdapter(this,
                 DataUtils.generateNews()));
         rw.setOnItemClickListener((adapterView, view, i, l) -> {

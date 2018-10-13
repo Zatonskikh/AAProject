@@ -11,7 +11,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
         <activity
-            android:name=".presentation.news.ListNewsActivity"
+            android:name=".presentation.news.RecyclerNewsActivity"
             android:windowSoftInputMode="adjustResize"
         >
             <intent-filter>
