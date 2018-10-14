@@ -28,6 +28,7 @@
             android:name=".presentation.news.NewsDetailsActivity"
             android:windowSoftInputMode="adjustResize">
         </activity>
+        <activity android:name=".presentation.threads.Task4P1"/>
     </application>
 
 </manifest>
