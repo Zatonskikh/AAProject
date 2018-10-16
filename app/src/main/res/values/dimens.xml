@@ -18,4 +18,8 @@
     <dimen name="button_height">35dp</dimen>
     <dimen name="image_height">215dp</dimen>
     <dimen name="social_padding">100dp</dimen>
+    <dimen name="news_item_height">190dp</dimen>
+    <dimen name="big_text">20sp</dimen>
+    <dimen name="padding_text">8dp</dimen>
+    <dimen name="image_width">250dp</dimen>
 </resources>
