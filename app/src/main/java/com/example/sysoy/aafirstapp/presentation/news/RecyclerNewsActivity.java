@@ -51,7 +51,6 @@ public class RecyclerNewsActivity extends AppCompatActivity {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         newsItems -> {
-                            System.out.println("1 " + Thread.currentThread().toString());
                             rw.setAdapter(new NewsRecyclerAdapter(this,
                                     newsItems, clickListener));
                             rw.setLayoutManager(new LinearLayoutManager(this));
@@ -77,12 +76,11 @@ public class RecyclerNewsActivity extends AppCompatActivity {
         setContentView(R.layout.recycle_news_activity);
         initToolbar();
         initScreen();
-        System.out.println("2 " + Thread.currentThread().toString());
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
+    protected void onDestroy() {
+        super.onDestroy();
         disposable.dispose();
     }
 }
