@@ -20,6 +20,9 @@ import static com.example.sysoy.aafirstapp.presentation.news.NewsDetailsActivity
 
 public class RecyclerNewsActivity extends AppCompatActivity {
 
+    private RecyclerView rw;
+    private NewsRecyclerAdapter newsAdapter;
+
     private final NewsRecyclerAdapter.OnItemClickListener clickListener = newsItem -> start(RecyclerNewsActivity.this,
             newsItem.getImageUrl(),
             newsItem.getCategory()
@@ -32,12 +35,14 @@ public class RecyclerNewsActivity extends AppCompatActivity {
                             .getPublishDate()));
 
     private void initScreen(){
-        RecyclerView rw = findViewById(R.id.rw);
-        rw.setAdapter( new NewsRecyclerAdapter(this,
-                DataUtils.generateNews(), clickListener));
-        rw.setLayoutManager(new LinearLayoutManager(this));
+        rw = findViewById(R.id.rw);
+        newsAdapter = new NewsRecyclerAdapter(this,
+                DataUtils.generateNews(), clickListener);
+        rw.setAdapter(newsAdapter );
         if(this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
             rw.setLayoutManager(new GridLayoutManager(this, 2));
+        } else {
+            rw.setLayoutManager(new LinearLayoutManager(this));
         }
     }
 

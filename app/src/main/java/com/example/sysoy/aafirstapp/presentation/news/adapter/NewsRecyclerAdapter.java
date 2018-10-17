@@ -61,6 +61,11 @@ public class NewsRecyclerAdapter extends Adapter<NewsRecyclerAdapter.ViewHolder>
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
         viewHolder.bind(newsItems.get(i));
+        viewHolder.itemView.setOnClickListener(view -> {
+            if (clickListener != null) {
+                clickListener.onItemClick(newsItems.get(i));
+            }
+        });
     }
 
     @Override
@@ -77,17 +82,11 @@ public class NewsRecyclerAdapter extends Adapter<NewsRecyclerAdapter.ViewHolder>
 
         ViewHolder(@NonNull View itemView, @Nullable OnItemClickListener clickListener) {
             super(itemView);
-            itemView.setOnClickListener(view -> {
-                int position = getAdapterPosition();
-                if (clickListener != null && position != RecyclerView.NO_POSITION) {
-                    clickListener.onItemClick(newsItems.get(position));
-                }
-            });
-            this.newsCategory = itemView.findViewById(R.id.category);
-            this.newsHeader = itemView.findViewById(R.id.header);
-            this.newsImage = itemView.findViewById(R.id.news_image);
-            this.newsBody = itemView.findViewById(R.id.body);
-            this.newsDate = itemView.findViewById(R.id.date);
+            newsCategory = itemView.findViewById(R.id.category);
+            newsHeader = itemView.findViewById(R.id.header);
+            newsImage = itemView.findViewById(R.id.news_image);
+            newsBody = itemView.findViewById(R.id.body);
+            newsDate = itemView.findViewById(R.id.date);
         }
 
         void bind(NewsItem newsItem){
