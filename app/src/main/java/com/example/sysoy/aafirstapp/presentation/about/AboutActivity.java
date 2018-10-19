@@ -47,7 +47,7 @@ public class AboutActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp);
-        toolbar.setNavigationOnClickListener(view -> AboutActivity.super.onBackPressed());
+        toolbar.setNavigationOnClickListener(view -> super.onBackPressed());
     }
 
     private void initScreen() {
