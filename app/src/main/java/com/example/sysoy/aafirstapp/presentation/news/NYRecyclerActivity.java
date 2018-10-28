@@ -1,5 +1,6 @@
 package com.example.sysoy.aafirstapp.presentation.news;
 
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -12,33 +13,22 @@ import android.view.View;
 import android.widget.ProgressBar;
 
 import com.example.sysoy.aafirstapp.R;
+import com.example.sysoy.aafirstapp.models.network.NewsApi;
 import com.example.sysoy.aafirstapp.presentation.about.AboutActivity;
-import com.example.sysoy.aafirstapp.presentation.news.adapter.NewsRecyclerAdapter;
-import com.example.sysoy.aafirstapp.utils.DataUtils;
+import com.example.sysoy.aafirstapp.presentation.news.adapter.NYTimesAdapter;
 
-import java.text.DateFormat;
-import java.util.concurrent.TimeUnit;
-
-import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
-import static com.example.sysoy.aafirstapp.presentation.news.NewsDetailsActivity.start;
+public class NYRecyclerActivity extends AppCompatActivity {
 
-public class RecyclerNewsActivity extends AppCompatActivity {
-
-    private final NewsRecyclerAdapter.OnItemClickListener clickListener = newsItem -> start(RecyclerNewsActivity.this,
-            newsItem.getImageUrl(),
-            newsItem.getCategory()
-                    .getName(),
-            newsItem.getTitle(),
-            newsItem.getFullText(),
-            DateFormat
-                    .getDateInstance()
-                    .format(newsItem
-                            .getPublishDate()));
+    private final NYTimesAdapter.OnItemClickListener clickListener
+            = newsItem -> {
+        NYDetailsActivity.start(this,
+                newsItem.getUrl(),
+                newsItem.getSubSection());
+    };
     private Disposable disposable;
 
     private void initScreen() {
@@ -49,26 +39,28 @@ public class RecyclerNewsActivity extends AppCompatActivity {
         } else {
             rw.setLayoutManager(new LinearLayoutManager(this));
         }
-        disposable = Observable
-                .fromCallable(DataUtils::generateNews)
-                .delay(2, TimeUnit.SECONDS)
+        disposable = NewsApi
+                .getInstance()
+                .news()
+                .getNews("world")
                 .doOnSubscribe(disposable ->
-                    showProgress(pb, true))
+                        showProgress(pb, true))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                        newsItems -> {
-                            rw.setAdapter(new NewsRecyclerAdapter(this,
-                                    DataUtils.generateNews(), clickListener));
+                        newsListDTO -> {
+                            rw.setAdapter(new NYTimesAdapter(this,
+                                    newsListDTO, clickListener));
                         },
                         t -> showProgress(pb, false),
                         () -> showProgress(pb, false));
+
     }
 
     private void initToolbar() {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        findViewById(R.id.ic_info).setOnClickListener(view -> AboutActivity.start(RecyclerNewsActivity.this));
+        findViewById(R.id.ic_info).setOnClickListener(view -> AboutActivity.start(NYRecyclerActivity.this));
     }
 
     private void showProgress(ProgressBar pb, boolean needShowing){

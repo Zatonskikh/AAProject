@@ -29,28 +29,28 @@ public class NewsItemDTO {
     private ArrayList<MultimediaDTO> multimedia;
 
     @Nullable
-    String getSubSection(){
+    public String getSubSection(){
         return subSection;
     }
 
-    String getTitle(){
+    public String getTitle(){
         return title;
     }
 
-    String getAbstractNew(){
+    public String getAbstractNew(){
         return abstractNew;
     }
 
-    String getUrl(){
+    public String getUrl(){
         return url;
     }
 
-    String getPublishedDate(){
+    public String getPublishedDate(){
         return publishedDate;
     }
 
     @Nullable
-    ArrayList<MultimediaDTO> getMultimedia(){
+    public ArrayList<MultimediaDTO> getMultimedia(){
         return multimedia;
     }
 }

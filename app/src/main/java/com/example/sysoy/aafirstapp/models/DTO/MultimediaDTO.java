@@ -11,7 +11,7 @@ public class MultimediaDTO {
     private String url;
 
     @Nullable
-    String getUrl(){
+    public String getUrl(){
         return url;
     }
 }
