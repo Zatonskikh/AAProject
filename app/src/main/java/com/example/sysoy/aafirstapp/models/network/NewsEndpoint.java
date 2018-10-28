@@ -2,17 +2,16 @@ package com.example.sysoy.aafirstapp.models.network;
 
 import android.support.annotation.NonNull;
 
-import com.example.sysoy.aafirstapp.models.DTO.NewsItemDTO;
+import com.example.sysoy.aafirstapp.models.DTO.NewsListDTO;
 
-import java.util.List;
-
-import io.reactivex.Single;
+import io.reactivex.Observable;
 import retrofit2.http.GET;
+import retrofit2.http.Path;
 
 public interface NewsEndpoint {
 
     @NonNull
-    @GET("svc/topstories/v2/world.json")
-    Single<List<NewsItemDTO>> getNews();
+    @GET("svc/topstories/v2/{category}.json")
+    Observable<NewsListDTO> getNews(@Path("category") String category);
 
 }

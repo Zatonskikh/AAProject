@@ -1,13 +1,12 @@
 package com.example.sysoy.aafirstapp.models.network;
 
 import android.support.annotation.NonNull;
+
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
-import okhttp3.HttpUrl;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
-import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
@@ -46,7 +45,7 @@ public class NewsApi {
                 .build();
     }
 
-    public NewsEndpoint news(){
+    public NewsEndpoint news() {
         return newsEndpoint;
     }
 
@@ -59,14 +58,15 @@ public class NewsApi {
     }
 
     private class ApiKeyInterceptor implements Interceptor {
-
         @Override
         public Response intercept(@NonNull Chain chain) throws IOException {
-
-            final HttpUrl httpUrl = chain.request().url().newBuilder().addQueryParameter(API_KEY_NAME, API_KEY).build();
-            final Request request = chain.request().newBuilder().url(httpUrl).build();
-
-            return chain.proceed(request);
+            return chain.proceed(
+                    chain
+                            .request()
+                            .newBuilder()
+                            .addHeader(API_KEY_NAME, API_KEY)
+                            .build()
+            );
         }
     }
 }

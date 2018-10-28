@@ -26,7 +26,7 @@ public class NewsItemDTO {
 
     @SerializedName("multimedia")
     @Nullable
-    private ArrayList<String> multimedia;
+    private ArrayList<MultimediaDTO> multimedia;
 
     @Nullable
     String getSubSection(){
@@ -50,7 +50,7 @@ public class NewsItemDTO {
     }
 
     @Nullable
-    ArrayList<String> getMultimedia(){
+    ArrayList<MultimediaDTO> getMultimedia(){
         return multimedia;
     }
 }
