@@ -45,9 +45,6 @@ public class RecyclerNewsActivity extends AppCompatActivity {
         RecyclerView rw = findViewById(R.id.rw);
         ProgressBar pb = findViewById(R.id.recycler_progress);
         showProgress(pb, true);
-        newsAdapter = new NewsRecyclerAdapter(this,
-                DataUtils.generateNews(), clickListener);
-        rw.setAdapter(newsAdapter );
         disposable = Observable
                 .fromCallable(DataUtils::generateNews)
                 .delay(2, TimeUnit.SECONDS)
@@ -55,7 +52,7 @@ public class RecyclerNewsActivity extends AppCompatActivity {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         newsItems -> {
-                            rw.setAdapter(newsAdapter);
+                            rw.setAdapter(newsItems);
                             if(this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
                                 rw.setLayoutManager(new GridLayoutManager(this, 2));
                             } else {
