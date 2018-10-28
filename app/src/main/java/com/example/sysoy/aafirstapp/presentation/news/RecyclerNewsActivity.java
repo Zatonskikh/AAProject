@@ -22,6 +22,7 @@ import java.util.concurrent.TimeUnit;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
 import static com.example.sysoy.aafirstapp.presentation.news.NewsDetailsActivity.start;
@@ -39,29 +40,29 @@ public class RecyclerNewsActivity extends AppCompatActivity {
                     .format(newsItem
                             .getPublishDate()));
     private Disposable disposable;
-    private NewsRecyclerAdapter newsAdapter;
 
     private void initScreen() {
         RecyclerView rw = findViewById(R.id.rw);
         ProgressBar pb = findViewById(R.id.recycler_progress);
-        showProgress(pb, true);
-        newsAdapter = new NewsRecyclerAdapter(this,
-                DataUtils.generateNews(), clickListener);
-        rw.setAdapter(newsAdapter );
+        if(this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
+            rw.setLayoutManager(new GridLayoutManager(this, 2));
+        } else {
+            rw.setLayoutManager(new LinearLayoutManager(this));
+        }
         disposable = Observable
                 .fromCallable(DataUtils::generateNews)
                 .delay(2, TimeUnit.SECONDS)
+                .doOnSubscribe(disposable ->
+                    showProgress(pb, true))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         newsItems -> {
-                            rw.setAdapter(newsAdapter);
-                            if(this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
-                                rw.setLayoutManager(new GridLayoutManager(this, 2));
-                            } else {
-                                rw.setLayoutManager(new LinearLayoutManager(this));
-                            }
-                        }, t -> {}, () -> showProgress(pb, false));
+                            rw.setAdapter(new NewsRecyclerAdapter(this,
+                                    DataUtils.generateNews(), clickListener));
+                        },
+                        t -> showProgress(pb, false),
+                        () -> showProgress(pb, false));
     }
 
     private void initToolbar() {
@@ -85,6 +86,6 @@ public class RecyclerNewsActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        disposable.dispose();
+        if (isFinishing()) disposable.dispose();
     }
 }
