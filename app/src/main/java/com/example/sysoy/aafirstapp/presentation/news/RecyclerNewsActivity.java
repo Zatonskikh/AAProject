@@ -22,6 +22,7 @@ import java.util.concurrent.TimeUnit;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
 import static com.example.sysoy.aafirstapp.presentation.news.NewsDetailsActivity.start;
@@ -43,7 +44,6 @@ public class RecyclerNewsActivity extends AppCompatActivity {
     private void initScreen() {
         RecyclerView rw = findViewById(R.id.rw);
         ProgressBar pb = findViewById(R.id.recycler_progress);
-        showProgress(pb, true);
         if(this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
             rw.setLayoutManager(new GridLayoutManager(this, 2));
         } else {
@@ -52,6 +52,8 @@ public class RecyclerNewsActivity extends AppCompatActivity {
         disposable = Observable
                 .fromCallable(DataUtils::generateNews)
                 .delay(2, TimeUnit.SECONDS)
+                .doOnSubscribe(disposable ->
+                    showProgress(pb, true))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
