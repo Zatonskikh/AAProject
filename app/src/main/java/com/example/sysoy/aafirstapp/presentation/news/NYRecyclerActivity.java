@@ -93,7 +93,7 @@ public class NYRecyclerActivity extends AppCompatActivity {
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                runOnUiThread(() -> loadNews(arrayAdapter.getItem(i)));
+                loadNews(arrayAdapter.getItem(i));
             }
 
             @Override
