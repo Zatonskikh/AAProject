@@ -1,17 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".presentation.news.NYDetailsActivity"
     android:orientation="vertical">
 
-    <WebView
-        android:id="@+id/root_web_view"
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/dark"
+        android:clickable="true"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        app:titleTextColor="@color/white"
+        app:titleTextAppearance="@dimen/default_text_size">
+    </android.support.v7.widget.Toolbar>
 
-    </WebView>
     <ProgressBar
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -22,4 +29,10 @@
         android:gravity="top"
         android:visibility="visible"/>
 
-</RelativeLayout>
+    <WebView
+        android:id="@+id/root_web_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    </WebView>
+
+</LinearLayout>

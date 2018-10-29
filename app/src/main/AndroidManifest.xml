@@ -31,6 +31,12 @@
         <activity
             android:name=".presentation.news.NYDetailsActivity"
             android:windowSoftInputMode="adjustResize">
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+
         </activity>
         <activity android:name=".presentation.threads.Task4P1"/>
     </application>
