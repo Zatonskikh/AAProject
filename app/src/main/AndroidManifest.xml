@@ -25,10 +25,6 @@
             android:windowSoftInputMode="adjustResize">
         </activity>
         <activity
-            android:name=".presentation.news.NewsDetailsActivity"
-            android:windowSoftInputMode="adjustResize">
-        </activity>
-        <activity
             android:name=".presentation.news.NYDetailsActivity"
             android:windowSoftInputMode="adjustResize">
 

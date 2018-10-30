@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:id="@+id/error_screen"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center">
+
+    <android.support.v7.widget.AppCompatTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/chto_to_poshlo_ne_tak"
+        android:textSize="@dimen/big_text_size"
+        android:layout_marginBottom="@dimen/default_list_element_margin"
+        />
+
+    <android.support.v7.widget.AppCompatButton
+        android:id="@+id/button_retry"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/retry"
+        android:textColor="@color/white"
+        android:textSize="@dimen/default_text_size"
+        android:textStyle="bold"
+        android:background="@color/divider_color"
+        />
+
+</LinearLayout>

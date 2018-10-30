@@ -7,11 +7,15 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.webkit.WebResourceError;
+import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
 import com.example.sysoy.aafirstapp.R;
@@ -20,7 +24,6 @@ public class NYDetailsActivity extends AppCompatActivity {
 
     private WebView wv;
     private ProgressBar pb;
-    private String url;
 
     public static void start(Context context, String url, String category){
         Intent intent = new Intent(context, NYDetailsActivity.class);
@@ -39,9 +42,15 @@ public class NYDetailsActivity extends AppCompatActivity {
 
     @SuppressLint("SetJavaScriptEnabled")
     private void initScreen(){
-        url = getIntent().getStringExtra("url");
+        String url = getIntent().getStringExtra("url");
         wv = findViewById(R.id.root_web_view);
         pb = findViewById(R.id.progress);
+        LinearLayout errorScreen = findViewById(R.id.error_screen);
+        AppCompatButton retryButton = findViewById(R.id.button_retry);
+        retryButton.setOnClickListener(view -> {
+            wv.loadUrl(url);
+            errorScreen.setVisibility(View.GONE);
+        });
         wv.getSettings().setCacheMode(WebSettings.LOAD_DEFAULT);
         wv.getSettings().setJavaScriptEnabled(true);
         wv.setWebViewClient(new WebViewClient() {
@@ -57,17 +66,21 @@ public class NYDetailsActivity extends AppCompatActivity {
                 pb.setVisibility(View.GONE);
             }
 
+            @Override
+            public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
+                super.onReceivedError(view, request, error);
+                errorScreen.setVisibility(View.VISIBLE);
+            }
         });
         wv.loadUrl(url);
     }
 
     private void initToolbar(){
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbarer);
         setSupportActionBar(toolbar);
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp);
         toolbar.setNavigationOnClickListener(view -> super.onBackPressed());
-        Intent intent = getIntent();
-        toolbar.setTitle(intent.getStringExtra("category"));
+        toolbar.setTitle(getIntent().getStringExtra("category").toUpperCase());
     }
 
     @Override

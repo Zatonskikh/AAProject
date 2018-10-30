@@ -16,11 +16,19 @@
     <string name="default_date">dd.MM.yyyy</string>
     <string name="category">category</string>
     <string name="title">title</string>
+    <string name="retry">RETRY</string>
+    <string name="chto_to_poshlo_ne_tak">Chto-to poshlo ne tak…</string>
     <string-array name="categories">
         <item>home</item>
         <item>opinion</item>
         <item>world</item>
         <item>national</item>
         <item>politics</item>
+        <item>upshots</item>
+        <item>nyregion</item>
+        <item>business</item>
+        <item>technology</item>
+        <item>science</item>
+        <item>health</item>
     </string-array>
 </resources>
