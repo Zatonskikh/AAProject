@@ -13,13 +13,7 @@
         <activity
             android:name=".presentation.news.NYRecyclerActivity"
             android:windowSoftInputMode="adjustResize"
-        >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-
-        </activity>
+        />
         <activity
             android:name=".presentation.about.AboutActivity"
             android:windowSoftInputMode="adjustResize">
@@ -35,6 +29,12 @@
 
         </activity>
         <activity android:name=".presentation.threads.Task4P1"/>
+        <activity android:name=".presentation.news.NYStartActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

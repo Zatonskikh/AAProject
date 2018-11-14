@@ -10,6 +10,7 @@ import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.sysoy.aafirstapp.R;
 import com.example.sysoy.aafirstapp.models.DTO.NewsItemDTO;
+import com.example.sysoy.aafirstapp.models.NewsItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +20,7 @@ import static android.support.constraint.Constraints.TAG;
 public class NYTimesAdapter extends Adapter<NewsViewHolder> {
 
     @NonNull
-    private final List<NewsItemDTO> newsList = new ArrayList<>();
+    private final List<NewsItem> newsList = new ArrayList<>();
 
     @NonNull
     private final RequestManager imageLoader;
@@ -52,11 +53,10 @@ public class NYTimesAdapter extends Adapter<NewsViewHolder> {
     }
 
     public interface OnItemClickListener {
-        void onItemClick(NewsItemDTO item);
+        void onItemClick(NewsItem item);
     }
 
-    public void replaceItems(@NonNull List<NewsItemDTO> items) {
-        Log.w(TAG, "replace items: came first!");
+    public void replaceItems(@NonNull List<NewsItem> items) {
         this.newsList.clear();
         this.newsList.addAll(items);
         notifyDataSetChanged();

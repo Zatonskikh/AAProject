@@ -1,23 +1,21 @@
 package com.example.sysoy.aafirstapp.models;
 
-import java.util.Date;
-
 public class NewsItem {
 
     private final String title;
     private final String imageUrl;
-    private final Category category;
-    private final Date publishDate;
+    private final String category;
+    private final String publishDate;
     private final String previewText;
-    private final String fullText;
+    private final String urlToFull;
 
-    public NewsItem(String title, String imageUrl, Category category, Date publishDate, String previewText, String fullText) {
+    public NewsItem(String title, String imageUrl, String category, String publishDate, String previewText, String urlToFull) {
         this.title = title;
         this.imageUrl = imageUrl;
         this.category = category;
         this.publishDate = publishDate;
         this.previewText = previewText;
-        this.fullText = fullText;
+        this.urlToFull = urlToFull;
     }
 
     public String getTitle() {
@@ -28,11 +26,11 @@ public class NewsItem {
         return imageUrl;
     }
 
-    public Category getCategory() {
+    public String getCategory() {
         return category;
     }
 
-    public Date getPublishDate() {
+    public String getPublishDate() {
         return publishDate;
     }
 
@@ -40,7 +38,7 @@ public class NewsItem {
         return previewText;
     }
 
-    public String getFullText() {
-        return fullText;
+    public String getUrlToFull() {
+        return urlToFull;
     }
 }

@@ -3,6 +3,7 @@ package com.example.sysoy.aafirstapp.presentation.news;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatSpinner;
@@ -19,37 +20,61 @@ import android.widget.ProgressBar;
 
 import com.bumptech.glide.Glide;
 import com.example.sysoy.aafirstapp.R;
+import com.example.sysoy.aafirstapp.models.DTO.NewsItemDTO;
+import com.example.sysoy.aafirstapp.models.NewsItem;
 import com.example.sysoy.aafirstapp.models.network.NewsApi;
 import com.example.sysoy.aafirstapp.presentation.about.AboutActivity;
 import com.example.sysoy.aafirstapp.presentation.news.adapter.NYTimesAdapter;
+import com.example.sysoy.aafirstapp.presentation.news.db.AppDatabase;
+import com.example.sysoy.aafirstapp.presentation.news.db.NewsDao;
+import com.example.sysoy.aafirstapp.presentation.news.db.NewsEntity;
+import com.example.sysoy.aafirstapp.presentation.news.db.NewsRepository;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
+
+import static com.example.sysoy.aafirstapp.presentation.news.helpers.Converter.fromDTO;
+import static com.example.sysoy.aafirstapp.presentation.news.helpers.Converter.fromDatabase;
+import static com.example.sysoy.aafirstapp.presentation.news.helpers.Converter.toDatabase;
 
 public class NYRecyclerActivity extends AppCompatActivity {
 
-    private final NYTimesAdapter.OnItemClickListener clickListener
-            = newsItem -> {
-        NYDetailsActivity.start(this,
-                newsItem.getUrl(),
-                newsItem.getSubSection() == null ? "" : newsItem.getSubSection());
-    };
-    private Disposable disposable;
+    private CompositeDisposable disposables = new CompositeDisposable();
     private ProgressBar pb;
     private NYTimesAdapter ad;
     private AppCompatButton retryButton;
     private LinearLayout errorScreen;
+    private FloatingActionButton fab;
+    private NewsRepository newsRepository;
+
+    private final NYTimesAdapter.OnItemClickListener clickListener
+            = newsItem -> {
+        NYDetailsActivity.start(this,
+                newsItem.getUrlToFull(),
+                newsItem.getCategory() == null ? "" : newsItem.getCategory());
+    };
 
     private void initScreen() {
+        newsRepository = new NewsRepository(this);
+
         RecyclerView rw = findViewById(R.id.rw);
         retryButton = findViewById(R.id.button_retry);
-        errorScreen = findViewById(R.id.error_screen);
+        errorScreen = findViewById(R.id.error_message);
         pb = findViewById(R.id.recycler_progress);
+        fab = findViewById(R.id.reload);
         AppCompatSpinner spinner = findViewById(R.id.spinner);
         retryButton.setOnClickListener(view -> {
             loadNews(spinner.getSelectedItem().toString());
             errorScreen.setVisibility(View.GONE);
+        });
+        fab.setOnClickListener(view -> {
+            loadNews(spinner.getSelectedItem().toString());
         });
         ad = new NYTimesAdapter(clickListener, Glide.with(this));
         if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
@@ -58,33 +83,52 @@ public class NYRecyclerActivity extends AppCompatActivity {
             rw.setLayoutManager(new LinearLayoutManager(this));
         }
         rw.setAdapter(ad);
-        loadNews(spinner.getSelectedItem().toString());
+        String[] strings = {"world"};
+        checkDbAndLoad(strings);
+
+    }
+
+    private void checkDbAndLoad(String[] titles){
+        Disposable disposable = newsRepository.getById(titles)
+                .subscribeOn(Schedulers.io())
+                .doOnSubscribe(disposable1 -> {
+
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(newsEntityList -> {
+                    if (newsEntityList.size() == 0){
+                        loadNews("world");
+                    } else {
+                        ad.replaceItems(fromDatabase(newsEntityList));
+                    }
+                });
+        disposables.add(disposable);
     }
 
     private void loadNews(String query) {
-        disposable = NewsApi
+        disposables.add(NewsApi
                 .getInstance()
                 .news()
                 .getNews(query)
                 .subscribeOn(Schedulers.io())
-                .doOnSubscribe(disposable ->
-                        showProgress(pb, true))
+                .doOnSubscribe(disposable ->{
+                        fab.hide();
+                        showProgress(pb, true);
+                })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         newsListDTO -> {
-                            ad.replaceItems(newsListDTO.getNews());
+                            ad.replaceItems(fromDTO(newsListDTO.getNews()));
+                            fab.show();
+                            newsRepository.add(toDatabase(fromDTO(newsListDTO.getNews())));
                         },
                         t -> {
                             showProgress(pb, false);
                             errorScreen.setVisibility(View.VISIBLE);
                         },
-                        () -> showProgress(pb, false));
+                        () -> showProgress(pb, false)));
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        return super.onCreateOptionsMenu(menu);
-    }
 
     private void initToolbar() {
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -115,6 +159,10 @@ public class NYRecyclerActivity extends AppCompatActivity {
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        return super.onCreateOptionsMenu(menu);
+    }
+    @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.recycle_news_activity);
@@ -125,6 +173,6 @@ public class NYRecyclerActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (isFinishing()) disposable.dispose();
+        if (isFinishing()) disposables.dispose();
     }
 }

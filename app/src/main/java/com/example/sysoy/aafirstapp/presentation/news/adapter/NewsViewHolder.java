@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.bumptech.glide.RequestManager;
 import com.example.sysoy.aafirstapp.R;
 import com.example.sysoy.aafirstapp.models.DTO.NewsItemDTO;
+import com.example.sysoy.aafirstapp.models.NewsItem;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -21,6 +22,7 @@ import java.util.List;
 import java.util.Locale;
 
 import static android.support.constraint.Constraints.TAG;
+import static com.example.sysoy.aafirstapp.presentation.news.helpers.Helper.dateFormatter;
 
 public class NewsViewHolder extends RecyclerView.ViewHolder {
     private ImageView newsImage;
@@ -31,16 +33,15 @@ public class NewsViewHolder extends RecyclerView.ViewHolder {
 
     private RequestManager imageLoader;
 
-    public static NewsViewHolder create(@NonNull ViewGroup viewGroup, NYTimesAdapter.OnItemClickListener clickListener, RequestManager imageLoader, List<NewsItemDTO> newsItems){
+    public static NewsViewHolder create(@NonNull ViewGroup viewGroup, NYTimesAdapter.OnItemClickListener clickListener, RequestManager imageLoader, List<NewsItem> newsItems){
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.news_item, viewGroup, false);
 
         return new NewsViewHolder(view, clickListener, imageLoader, newsItems);
     }
 
-    private NewsViewHolder(@NonNull View itemView, @Nullable NYTimesAdapter.OnItemClickListener clickListener, RequestManager imageLoader, List<NewsItemDTO> newsItems) {
+    private NewsViewHolder(@NonNull View itemView, @Nullable NYTimesAdapter.OnItemClickListener clickListener, RequestManager imageLoader, List<NewsItem> newsItems) {
         super(itemView);
         this.imageLoader = imageLoader;
-        Log.w(TAG, "NewsViewHolder: came first!");
         itemView.setOnClickListener(view -> {
             int position = getAdapterPosition();
             if (clickListener != null && position != RecyclerView.NO_POSITION) {
@@ -55,32 +56,22 @@ public class NewsViewHolder extends RecyclerView.ViewHolder {
 
     }
 
-    void bind(NewsItemDTO newsItem) {
-        if (newsItem.getSubSection() == null){
+    void bind(NewsItem newsItem) {
+        if (newsItem.getCategory() == null){
             newsCategory.setVisibility(View.GONE);
         }else {
-            newsCategory.setText(newsItem.getSubSection());
+            newsCategory.setText(newsItem.getCategory());
         }
         newsHeader.setText(newsItem.getTitle());
-        newsBody.setText(newsItem.getAbstractNew());
-        newsDate.setText(dateFormatter(newsItem.getPublishedDate()));
-        if (newsItem.getMultimedia().size() == 0){
+        newsBody.setText(newsItem.getPreviewText());
+        newsDate.setText(dateFormatter(newsItem.getPublishDate()));
+        if (newsItem.getImageUrl().equals("")){
             newsImage.setVisibility(View.GONE);
         }else {
             imageLoader
                     .asDrawable()
-                    .load(newsItem.getMultimedia().get(0).getUrl())
+                    .load(newsItem.getImageUrl())
                     .into(newsImage);
-        }
-
-    }
-
-    private  String dateFormatter(@NonNull String date) {
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyy-MM-dd", Locale.getDefault());
-        try {
-            return DateFormat.getDateInstance().format(simpleDateFormat.parse(date));
-        } catch (ParseException e) {
-            return "no date";
         }
     }
 }
