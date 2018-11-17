@@ -11,6 +11,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
@@ -20,28 +21,21 @@ import android.widget.ProgressBar;
 
 import com.bumptech.glide.Glide;
 import com.example.sysoy.aafirstapp.R;
-import com.example.sysoy.aafirstapp.models.DTO.NewsItemDTO;
-import com.example.sysoy.aafirstapp.models.NewsItem;
 import com.example.sysoy.aafirstapp.models.network.NewsApi;
 import com.example.sysoy.aafirstapp.presentation.about.AboutActivity;
 import com.example.sysoy.aafirstapp.presentation.news.adapter.NYTimesAdapter;
-import com.example.sysoy.aafirstapp.presentation.news.db.AppDatabase;
-import com.example.sysoy.aafirstapp.presentation.news.db.NewsDao;
-import com.example.sysoy.aafirstapp.presentation.news.db.NewsEntity;
 import com.example.sysoy.aafirstapp.presentation.news.db.NewsRepository;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Action;
 import io.reactivex.schedulers.Schedulers;
 
 import static com.example.sysoy.aafirstapp.presentation.news.helpers.Converter.fromDTO;
 import static com.example.sysoy.aafirstapp.presentation.news.helpers.Converter.fromDatabase;
 import static com.example.sysoy.aafirstapp.presentation.news.helpers.Converter.toDatabase;
+import static android.support.constraint.Constraints.TAG;
 
 public class NYRecyclerActivity extends AppCompatActivity {
 
@@ -83,22 +77,24 @@ public class NYRecyclerActivity extends AppCompatActivity {
             rw.setLayoutManager(new LinearLayoutManager(this));
         }
         rw.setAdapter(ad);
-        String[] strings = {"world"};
+        String[] strings = {spinner.getSelectedItem().toString()};
         checkDbAndLoad(strings);
-
     }
 
     private void checkDbAndLoad(String[] titles){
         Disposable disposable = newsRepository.getById(titles)
                 .subscribeOn(Schedulers.io())
                 .doOnSubscribe(disposable1 -> {
-
+                    fab.hide();
+                    showProgress(pb, true);
                 })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(newsEntityList -> {
                     if (newsEntityList.size() == 0){
-                        loadNews("world");
+                        loadNews(titles[0]);
                     } else {
+                        fab.show();
+                        showProgress(pb, false);
                         ad.replaceItems(fromDatabase(newsEntityList));
                     }
                 });
@@ -120,7 +116,12 @@ public class NYRecyclerActivity extends AppCompatActivity {
                         newsListDTO -> {
                             ad.replaceItems(fromDTO(newsListDTO.getNews()));
                             fab.show();
-                            newsRepository.add(toDatabase(fromDTO(newsListDTO.getNews())));
+                            disposables.add(newsRepository
+                                    .add(toDatabase(fromDTO(newsListDTO.getNews()), query))
+                                    .subscribeOn(Schedulers.io())
+                                    .observeOn(AndroidSchedulers.mainThread())
+                                    .subscribe(() -> Log.w(TAG, "Good news everyone!"))
+                            );
                         },
                         t -> {
                             showProgress(pb, false);
@@ -142,7 +143,8 @@ public class NYRecyclerActivity extends AppCompatActivity {
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                loadNews(arrayAdapter.getItem(i));
+                String[] item = {arrayAdapter.getItem(i)};
+                checkDbAndLoad(item);
                 errorScreen.setVisibility(View.GONE);
             }
 

@@ -1,14 +1,12 @@
 package com.example.sysoy.aafirstapp.presentation.news.db;
 
 import android.content.Context;
-import android.util.Log;
 
 import java.util.List;
 import java.util.concurrent.Callable;
+
 import io.reactivex.Completable;
 import io.reactivex.Observable;
-
-import static android.support.constraint.Constraints.TAG;
 
 
 public class NewsRepository {
@@ -24,8 +22,8 @@ public class NewsRepository {
         return Completable.fromCallable((Callable<Void>) () -> {
             NewsEntity[] newsArray = news
                     .toArray(new NewsEntity[news.size()]);
+            appDatabase.newsDao().deleteById(news.get(0).getType());
             appDatabase.newsDao().insertAll(newsArray);
-            Log.w( TAG, "I have been written to db!");
             return null;
         });
     }
@@ -36,6 +34,13 @@ public class NewsRepository {
 
     public Observable<List<NewsEntity>> getById(String[] titles){
         return Observable
-                .fromCallable(() -> appDatabase.newsDao().loadAllByIds(titles));
+                .fromCallable(new Callable<List<NewsEntity>>() {
+                    @Override
+                    public List<NewsEntity> call() throws Exception {
+                        return appDatabase
+                                .newsDao()
+                                .loadAllByIds(titles);
+                    }
+                });
     }
 }

@@ -19,17 +19,20 @@ public interface NewsDao {
     @Query("SELECT * FROM news")
     List<NewsEntity> getAll();
 
-    @Query("SELECT * FROM news WHERE title IN (:titles)")
-    List<NewsEntity> loadAllByIds(String[] titles);
+    @Query("SELECT * FROM news WHERE type IN (:types)")
+    List<NewsEntity> loadAllByIds(String[] types);
 
-    @Query("SELECT * FROM news WHERE title = :title")
-    Single<NewsEntity> getNewsById(String title);
+    @Query("SELECT * FROM news WHERE type = :type")
+    List<NewsEntity> getNewsById(String type);
 
     @Insert(onConflict = REPLACE)
     void insertAll(NewsEntity... news);
 
     @Insert(onConflict = REPLACE)
     void insert(NewsEntity news);
+
+    @Query("DELETE FROM news WHERE type = :type")
+    void deleteById(String type);
 
     @Delete
     void delete(NewsEntity news);

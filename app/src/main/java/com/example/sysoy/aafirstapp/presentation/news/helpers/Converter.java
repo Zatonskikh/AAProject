@@ -14,8 +14,9 @@ import static android.support.constraint.Constraints.TAG;
 
 public class Converter {
 
-    public static NewsEntity toDatabase(NewsItem news){
+    public static NewsEntity toDatabase(NewsItem news, String type){
             NewsEntity newsEntity = new NewsEntity();
+            newsEntity.setType(type);
             newsEntity.setAbstractNew(news.getPreviewText());
             newsEntity.setMultimedia(news.getImageUrl() != null ? news.getImageUrl(): "");
             newsEntity.setPublishedDate(news.getPublishDate());
@@ -25,10 +26,10 @@ public class Converter {
         return newsEntity;
     }
 
-    public static List<NewsEntity> toDatabase(List<NewsItem> news){
+    public static List<NewsEntity> toDatabase(List<NewsItem> news, String type){
         List<NewsEntity> items = new ArrayList<>();
         for (int i = 0; i < news.size(); i++){
-            items.add(toDatabase(news.get(i)));
+            items.add(toDatabase(news.get(i), type));
         }
         return items;
     }
@@ -49,7 +50,6 @@ public class Converter {
         for (int i = 0; i < news.size(); i++){
             items.add(fromDatabase(news.get(i)));
         }
-        Log.w( TAG, "I came from db!");
         return items;
     }
 

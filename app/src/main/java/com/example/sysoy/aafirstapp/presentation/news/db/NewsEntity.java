@@ -10,6 +10,10 @@ import android.support.annotation.Nullable;
 public class NewsEntity {
 
     @NonNull
+    @ColumnInfo(name = "type")
+    private String type;
+
+    @NonNull
     @PrimaryKey
     @ColumnInfo(name = "title")
     private String title;
@@ -80,5 +84,14 @@ public class NewsEntity {
 
     public void setMultimedia(@Nullable String multimedia) {
         this.multimedia = multimedia;
+    }
+
+    @NonNull
+    public String getType() {
+        return type;
+    }
+
+    public void setType(@NonNull String type) {
+        this.type = type;
     }
 }
