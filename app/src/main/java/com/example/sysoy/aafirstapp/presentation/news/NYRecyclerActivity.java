@@ -43,7 +43,6 @@ public class NYRecyclerActivity extends AppCompatActivity {
     private CompositeDisposable disposables = new CompositeDisposable();
     private ProgressBar pb;
     private NYTimesAdapter ad;
-    private AppCompatButton retryButton;
     private LinearLayout errorScreen;
     private FloatingActionButton fab;
     private NewsRepository newsRepository;
@@ -60,7 +59,7 @@ public class NYRecyclerActivity extends AppCompatActivity {
         newsRepository = new NewsRepository(this);
 
         RecyclerView rw = findViewById(R.id.rw);
-        retryButton = findViewById(R.id.button_retry);
+        AppCompatButton retryButton = findViewById(R.id.button_retry);
         errorScreen = findViewById(R.id.error_message);
         pb = findViewById(R.id.recycler_progress);
         fab = findViewById(R.id.reload);
@@ -80,8 +79,6 @@ public class NYRecyclerActivity extends AppCompatActivity {
             rw.setLayoutManager(new LinearLayoutManager(this));
         }
         rw.setAdapter(ad);
-        String[] strings = {spinner.getSelectedItem().toString()};
-        checkDbAndLoad(strings);
     }
 
     private void checkDbAndLoad(String[] titles) {
@@ -175,6 +172,9 @@ public class NYRecyclerActivity extends AppCompatActivity {
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(newsEntity -> {
                             ad.editItem(title, fromDatabase(newsEntity));
+                        },
+                        throwable -> {
+                            Log.w(TAG, throwable.toString());
                         });
                 disposables.add(disposable);
             }
@@ -197,6 +197,6 @@ public class NYRecyclerActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (isFinishing()) disposables.dispose();
+        disposables.dispose();
     }
 }

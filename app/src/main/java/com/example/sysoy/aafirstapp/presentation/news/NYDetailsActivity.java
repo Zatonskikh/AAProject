@@ -32,6 +32,8 @@ public class NYDetailsActivity extends AppCompatActivity {
     *and used 'title' as PrimaryKey.
      * To be honest, I still don't understand what I should have used as the primary key because it's not very obvious.
      * btw this isn't the main purpose of this task so I don't think it would be a big problem :)
+     * Also this produce some unexpected behaviour:
+     *  If news are related to several categories only one can be stored in database per loading
      */
     AppCompatTextView title;
     AppCompatEditText abstractNews;
