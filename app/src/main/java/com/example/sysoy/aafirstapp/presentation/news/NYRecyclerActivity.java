@@ -66,7 +66,8 @@ public class NYRecyclerActivity extends AppCompatActivity {
         fab = findViewById(R.id.reload);
         spinner = findViewById(R.id.spinner);
         retryButton.setOnClickListener(view -> {
-            loadNews(spinner.getSelectedItem().toString());
+            String[] titles = {spinner.getSelectedItem().toString()};
+            checkDbAndLoad(titles);
             errorScreen.setVisibility(View.GONE);
         });
         fab.setOnClickListener(view -> {
