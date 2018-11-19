@@ -1,5 +1,6 @@
 package com.example.sysoy.aafirstapp.presentation.news;
 
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -21,6 +22,7 @@ import android.widget.ProgressBar;
 
 import com.bumptech.glide.Glide;
 import com.example.sysoy.aafirstapp.R;
+import com.example.sysoy.aafirstapp.models.NewsItem;
 import com.example.sysoy.aafirstapp.models.network.NewsApi;
 import com.example.sysoy.aafirstapp.presentation.about.AboutActivity;
 import com.example.sysoy.aafirstapp.presentation.news.adapter.NYTimesAdapter;
@@ -29,13 +31,12 @@ import com.example.sysoy.aafirstapp.presentation.news.db.NewsRepository;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Action;
 import io.reactivex.schedulers.Schedulers;
 
+import static android.support.constraint.Constraints.TAG;
 import static com.example.sysoy.aafirstapp.presentation.news.helpers.Converter.fromDTO;
 import static com.example.sysoy.aafirstapp.presentation.news.helpers.Converter.fromDatabase;
 import static com.example.sysoy.aafirstapp.presentation.news.helpers.Converter.toDatabase;
-import static android.support.constraint.Constraints.TAG;
 
 public class NYRecyclerActivity extends AppCompatActivity {
 
@@ -46,12 +47,13 @@ public class NYRecyclerActivity extends AppCompatActivity {
     private LinearLayout errorScreen;
     private FloatingActionButton fab;
     private NewsRepository newsRepository;
+    private AppCompatSpinner spinner;
 
     private final NYTimesAdapter.OnItemClickListener clickListener
             = newsItem -> {
-        NYDetailsActivity.start(this,
-                newsItem.getUrlToFull(),
-                newsItem.getCategory() == null ? "" : newsItem.getCategory());
+        Intent intent = new Intent(this, NYDetailsActivity.class);
+        intent.putExtra("title", newsItem.getTitle());
+        startActivityForResult(intent, 1);
     };
 
     private void initScreen() {
@@ -62,7 +64,7 @@ public class NYRecyclerActivity extends AppCompatActivity {
         errorScreen = findViewById(R.id.error_message);
         pb = findViewById(R.id.recycler_progress);
         fab = findViewById(R.id.reload);
-        AppCompatSpinner spinner = findViewById(R.id.spinner);
+        spinner = findViewById(R.id.spinner);
         retryButton.setOnClickListener(view -> {
             loadNews(spinner.getSelectedItem().toString());
             errorScreen.setVisibility(View.GONE);
@@ -81,7 +83,7 @@ public class NYRecyclerActivity extends AppCompatActivity {
         checkDbAndLoad(strings);
     }
 
-    private void checkDbAndLoad(String[] titles){
+    private void checkDbAndLoad(String[] titles) {
         Disposable disposable = newsRepository.getById(titles)
                 .subscribeOn(Schedulers.io())
                 .doOnSubscribe(disposable1 -> {
@@ -90,7 +92,7 @@ public class NYRecyclerActivity extends AppCompatActivity {
                 })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(newsEntityList -> {
-                    if (newsEntityList.size() == 0){
+                    if (newsEntityList.size() == 0) {
                         loadNews(titles[0]);
                     } else {
                         fab.show();
@@ -107,9 +109,9 @@ public class NYRecyclerActivity extends AppCompatActivity {
                 .news()
                 .getNews(query)
                 .subscribeOn(Schedulers.io())
-                .doOnSubscribe(disposable ->{
-                        fab.hide();
-                        showProgress(pb, true);
+                .doOnSubscribe(disposable -> {
+                    fab.hide();
+                    showProgress(pb, true);
                 })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
@@ -129,7 +131,6 @@ public class NYRecyclerActivity extends AppCompatActivity {
                         },
                         () -> showProgress(pb, false)));
     }
-
 
     private void initToolbar() {
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -161,9 +162,29 @@ public class NYRecyclerActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (data != null) {
+            if (data.getStringExtra("exit_code").equals("deleted")){
+                ad.removeAt(data.getStringExtra("title"));
+            } else if(data.getStringExtra("exit_code").equals("edited")){
+                String title = data.getStringExtra("title");
+                Disposable disposable =
+                        newsRepository.getById(title)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(newsEntity -> {
+                            ad.editItem(title, fromDatabase(newsEntity));
+                        });
+                disposables.add(disposable);
+            }
+        }
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         return super.onCreateOptionsMenu(menu);
     }
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

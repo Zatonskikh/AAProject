@@ -22,8 +22,7 @@ public class NYStartActivity extends AppCompatActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        if (true) {
+        if (savedInstanceState == null) {
             setContentView(R.layout.start_activivty);
             AppCompatImageView image = findViewById(R.id.loading_screen);
             Glide

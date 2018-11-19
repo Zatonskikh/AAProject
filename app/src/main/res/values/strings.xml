@@ -12,6 +12,7 @@
     <string name="no_app_to_send">No app to send email</string>
     <string name="copyright">© 2018 atticus_fimch</string>
     <string name="default_text">default text</string>
+    <string name="default_news_input">Enter your text here</string>
     <string name="default_text_body" tools:ignore="Typos">default_text default_text default_text default_text default_text default_text default_text default_text default_text</string>
     <string name="default_date">dd.MM.yyyy</string>
     <string name="category">category</string>

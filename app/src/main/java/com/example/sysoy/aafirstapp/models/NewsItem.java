@@ -4,7 +4,7 @@ public class NewsItem {
 
     private final String title;
     private final String imageUrl;
-    private final String category;
+    private String category;
     private final String publishDate;
     private final String previewText;
     private final String urlToFull;
@@ -41,4 +41,6 @@ public class NewsItem {
     public String getUrlToFull() {
         return urlToFull;
     }
+
+    public void setCategory(String newCategory){category = newCategory;};
 }

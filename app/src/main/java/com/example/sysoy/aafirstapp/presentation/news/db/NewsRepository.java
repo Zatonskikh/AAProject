@@ -1,10 +1,8 @@
 package com.example.sysoy.aafirstapp.presentation.news.db;
 
 import android.content.Context;
-
 import java.util.List;
 import java.util.concurrent.Callable;
-
 import io.reactivex.Completable;
 import io.reactivex.Observable;
 
@@ -28,19 +26,36 @@ public class NewsRepository {
         });
     }
 
+    public Completable replaceItem(NewsEntity news){
+        return Completable.fromCallable((Callable<Void>) () -> {
+            appDatabase.newsDao().update(news);
+            return null;
+        });
+    }
+
     public Observable<List<NewsEntity>> get(){
         return Observable.fromCallable(() -> appDatabase.newsDao().getAll());
     }
 
-    public Observable<List<NewsEntity>> getById(String[] titles){
+    public Observable<List<NewsEntity>> getById(String[] type){
         return Observable
-                .fromCallable(new Callable<List<NewsEntity>>() {
-                    @Override
-                    public List<NewsEntity> call() throws Exception {
-                        return appDatabase
-                                .newsDao()
-                                .loadAllByIds(titles);
-                    }
+                .fromCallable(() -> appDatabase
+                        .newsDao()
+                        .loadAllByIds(type));
+    }
+
+    public Observable<NewsEntity> getById(String title){
+        return Observable
+                .fromCallable(() -> appDatabase
+                        .newsDao()
+                        .getNewsById(title));
+    }
+
+    public Completable deleteByTitle(String title){
+        return Completable
+                .fromCallable(() -> {
+                    appDatabase.newsDao().deleteByTitle(title);
+                    return null;
                 });
     }
 }

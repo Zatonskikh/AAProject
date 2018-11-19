@@ -14,6 +14,7 @@ import com.example.sysoy.aafirstapp.models.NewsItem;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static android.support.constraint.Constraints.TAG;
 
@@ -59,6 +60,28 @@ public class NYTimesAdapter extends Adapter<NewsViewHolder> {
     public void replaceItems(@NonNull List<NewsItem> items) {
         this.newsList.clear();
         this.newsList.addAll(items);
+        notifyDataSetChanged();
+    }
+
+    public void removeAt(String title){
+        List<NewsItem> resultList = newsList.stream()
+                .filter(newsItem -> newsItem.getTitle().equals(title))
+                .collect(Collectors.toList());
+        int position = newsList.indexOf(resultList.get(0));
+        newsList.remove(position);
+        notifyItemRemoved(position);
+        notifyItemRangeChanged(position, newsList.size());
+    }
+
+    public void editItem(String title, NewsItem item){
+        List<NewsItem> resultList = newsList.stream()
+                .filter(newsItem -> newsItem.getTitle().equals(title))
+                .collect(Collectors.toList());
+        int position = newsList.indexOf(resultList.get(0));
+        newsList.remove(position);
+        newsList.add(position, item);
+        notifyItemRemoved(position);
+        notifyItemRangeChanged(position, newsList.size());
         notifyDataSetChanged();
     }
 
