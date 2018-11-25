@@ -22,4 +22,5 @@
     <dimen name="big_text">20sp</dimen>
     <dimen name="padding_text">8dp</dimen>
     <dimen name="small_padding">5dp</dimen>
+    <dimen name="start_screen_icon_parameter">150dp</dimen>
 </resources>

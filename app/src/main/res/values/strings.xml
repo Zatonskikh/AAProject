@@ -19,6 +19,10 @@
     <string name="title">title</string>
     <string name="retry">RETRY</string>
     <string name="chto_to_poshlo_ne_tak">Chto-to poshlo ne tak…</string>
+    <string name="skip">SKIP</string>
+    <string name="read_news">read news</string>
+    <string name="update_news">update news</string>
+    <string name="delete_news">delete news</string>
     <string-array name="categories">
         <item>home</item>
         <item>opinion</item>
