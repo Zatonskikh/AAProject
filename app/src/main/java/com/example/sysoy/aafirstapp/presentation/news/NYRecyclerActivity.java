@@ -13,7 +13,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -22,11 +21,11 @@ import android.widget.ProgressBar;
 
 import com.bumptech.glide.Glide;
 import com.example.sysoy.aafirstapp.R;
-import com.example.sysoy.aafirstapp.models.NewsItem;
 import com.example.sysoy.aafirstapp.models.network.NewsApi;
 import com.example.sysoy.aafirstapp.presentation.about.AboutActivity;
 import com.example.sysoy.aafirstapp.presentation.news.adapter.NYTimesAdapter;
 import com.example.sysoy.aafirstapp.presentation.news.db.NewsRepository;
+import com.example.sysoy.aafirstapp.presentation.news.helpers.Converter;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -34,9 +33,6 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
 import static android.support.constraint.Constraints.TAG;
-import static com.example.sysoy.aafirstapp.presentation.news.helpers.Converter.fromDTO;
-import static com.example.sysoy.aafirstapp.presentation.news.helpers.Converter.fromDatabase;
-import static com.example.sysoy.aafirstapp.presentation.news.helpers.Converter.toDatabase;
 
 public class NYRecyclerActivity extends AppCompatActivity {
 
@@ -47,6 +43,7 @@ public class NYRecyclerActivity extends AppCompatActivity {
     private FloatingActionButton fab;
     private NewsRepository newsRepository;
     private AppCompatSpinner spinner;
+    Converter converter = new Converter();
 
     private final NYTimesAdapter.OnItemClickListener clickListener
             = newsItem -> {
@@ -95,7 +92,7 @@ public class NYRecyclerActivity extends AppCompatActivity {
                     } else {
                         fab.show();
                         showProgress(pb, false);
-                        ad.replaceItems(fromDatabase(newsEntityList));
+                        ad.replaceItems(converter.fromDatabase(newsEntityList));
                     }
                 });
         disposables.add(disposable);
@@ -114,10 +111,10 @@ public class NYRecyclerActivity extends AppCompatActivity {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         newsListDTO -> {
-                            ad.replaceItems(fromDTO(newsListDTO.getNews()));
+                            ad.replaceItems(converter.fromDTO(newsListDTO.getNews()));
                             fab.show();
                             disposables.add(newsRepository
-                                    .add(toDatabase(fromDTO(newsListDTO.getNews()), query))
+                                    .add(converter.toDatabase(converter.fromDTO(newsListDTO.getNews()), query))
                                     .subscribeOn(Schedulers.io())
                                     .observeOn(AndroidSchedulers.mainThread())
                                     .subscribe(() -> Log.w(TAG, "Good news everyone!"))
@@ -135,6 +132,7 @@ public class NYRecyclerActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         findViewById(R.id.ic_info).setOnClickListener(view -> AboutActivity.start(NYRecyclerActivity.this));
         AppCompatSpinner spinner = findViewById(R.id.spinner);
+        spinner.setVisibility(View.GONE);
         ArrayAdapter<String> arrayAdapter
                 = new ArrayAdapter<>(this, R.layout.spinner_item,
                 getResources().getStringArray(R.array.categories));
@@ -171,7 +169,7 @@ public class NYRecyclerActivity extends AppCompatActivity {
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(newsEntity -> {
-                            ad.editItem(title, fromDatabase(newsEntity));
+                            ad.editItem(title, converter.fromDatabase(newsEntity));
                         },
                         throwable -> {
                             Log.w(TAG, throwable.toString());
@@ -179,11 +177,6 @@ public class NYRecyclerActivity extends AppCompatActivity {
                 disposables.add(disposable);
             }
         }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        return super.onCreateOptionsMenu(menu);
     }
 
     @Override

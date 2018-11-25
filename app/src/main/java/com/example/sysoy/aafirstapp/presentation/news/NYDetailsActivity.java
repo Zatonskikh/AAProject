@@ -14,14 +14,12 @@ import android.widget.LinearLayout;
 import com.example.sysoy.aafirstapp.R;
 import com.example.sysoy.aafirstapp.models.NewsItem;
 import com.example.sysoy.aafirstapp.presentation.news.db.NewsRepository;
+import com.example.sysoy.aafirstapp.presentation.news.helpers.Converter;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
-
-import static com.example.sysoy.aafirstapp.presentation.news.helpers.Converter.fromDatabase;
-import static com.example.sysoy.aafirstapp.presentation.news.helpers.Converter.toDatabase;
 
 public class NYDetailsActivity extends AppCompatActivity {
 
@@ -44,6 +42,7 @@ public class NYDetailsActivity extends AppCompatActivity {
     NewsItem currentNews;
     String type;
     Toolbar toolbar;
+    Converter converter = new Converter();
     boolean isEdited = false;
     private CompositeDisposable disposables = new CompositeDisposable();
 
@@ -95,7 +94,7 @@ public class NYDetailsActivity extends AppCompatActivity {
                         .subscribe(newsEntityList -> {
                                     disableEditor();
                                     type = newsEntityList.getType();
-                                    currentNews = fromDatabase(newsEntityList);
+                                    currentNews = converter.fromDatabase(newsEntityList);
                                     category.setText(currentNews.getCategory());
                                     title.setText(currentNews.getTitle());
                                     abstractNews.setText(currentNews.getPreviewText());
@@ -141,7 +140,7 @@ public class NYDetailsActivity extends AppCompatActivity {
             );
             Disposable disposable =
                     newsRepository
-                    .replaceItem(toDatabase(newsItem, type))
+                    .replaceItem(converter.toDatabase(newsItem, type))
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe();
