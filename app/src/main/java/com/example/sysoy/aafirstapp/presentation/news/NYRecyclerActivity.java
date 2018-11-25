@@ -66,9 +66,7 @@ public class NYRecyclerActivity extends AppCompatActivity {
             checkDbAndLoad(titles);
             errorScreen.setVisibility(View.GONE);
         });
-        fab.setOnClickListener(view -> {
-            loadNews(spinner.getSelectedItem().toString());
-        });
+        fab.setOnClickListener(view -> loadNews(spinner.getSelectedItem().toString()));
         ad = new NYTimesAdapter(clickListener, Glide.with(this));
         if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
             rw.setLayoutManager(new GridLayoutManager(this, 2));
@@ -132,7 +130,6 @@ public class NYRecyclerActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         findViewById(R.id.ic_info).setOnClickListener(view -> AboutActivity.start(NYRecyclerActivity.this));
         AppCompatSpinner spinner = findViewById(R.id.spinner);
-        spinner.setVisibility(View.GONE);
         ArrayAdapter<String> arrayAdapter
                 = new ArrayAdapter<>(this, R.layout.spinner_item,
                 getResources().getStringArray(R.array.categories));
@@ -159,7 +156,7 @@ public class NYRecyclerActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if (data != null) {
+        if (data != null && ad.getItemCount() != 0) {
             if (data.getStringExtra("exit_code").equals("deleted")){
                 ad.removeAt(data.getStringExtra("title"));
             } else if(data.getStringExtra("exit_code").equals("edited")){
@@ -168,12 +165,8 @@ public class NYRecyclerActivity extends AppCompatActivity {
                         newsRepository.getById(title)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(newsEntity -> {
-                            ad.editItem(title, converter.fromDatabase(newsEntity));
-                        },
-                        throwable -> {
-                            Log.w(TAG, throwable.toString());
-                        });
+                        .subscribe(newsEntity -> ad.editItem(title, converter.fromDatabase(newsEntity)),
+                        throwable -> Log.w(TAG, throwable.toString()));
                 disposables.add(disposable);
             }
         }
