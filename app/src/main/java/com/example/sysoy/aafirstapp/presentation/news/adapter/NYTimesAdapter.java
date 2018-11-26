@@ -1,11 +1,13 @@
 package com.example.sysoy.aafirstapp.presentation.news.adapter;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView.Adapter;
 import android.util.Log;
 import android.view.ViewGroup;
 
+import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.sysoy.aafirstapp.R;
@@ -28,13 +30,13 @@ public class NYTimesAdapter extends Adapter<NewsViewHolder> {
     @Nullable
     private final NYTimesAdapter.OnItemClickListener clickListener;
 
-    public NYTimesAdapter(@Nullable NYTimesAdapter.OnItemClickListener clickListener, RequestManager imageLoader) {
+    public NYTimesAdapter(@Nullable NYTimesAdapter.OnItemClickListener clickListener, Context context) {
         this.clickListener = clickListener;
         RequestOptions imageOption = new RequestOptions()
                 .placeholder(R.drawable.default_news_image)
                 .fallback(R.drawable.default_news_image)
                 .centerCrop();
-        this.imageLoader = imageLoader.applyDefaultRequestOptions(imageOption);
+        imageLoader = Glide.with(context).applyDefaultRequestOptions(imageOption);
     }
 
     @NonNull
