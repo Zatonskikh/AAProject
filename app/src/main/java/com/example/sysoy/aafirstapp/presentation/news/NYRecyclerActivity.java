@@ -53,8 +53,7 @@ public class NYRecyclerActivity extends AppCompatActivity {
     };
 
     private void initScreen() {
-        newsRepository = new NewsRepository(this);
-
+        newsRepository = new NewsRepository(getApplicationContext());
         RecyclerView rw = findViewById(R.id.rw);
         AppCompatButton retryButton = findViewById(R.id.button_retry);
         errorScreen = findViewById(R.id.error_message);
@@ -67,7 +66,7 @@ public class NYRecyclerActivity extends AppCompatActivity {
             errorScreen.setVisibility(View.GONE);
         });
         fab.setOnClickListener(view -> loadNews(spinner.getSelectedItem().toString()));
-        ad = new NYTimesAdapter(clickListener, Glide.with(this));
+        ad = new NYTimesAdapter(clickListener, getApplicationContext());
         if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
             rw.setLayoutManager(new GridLayoutManager(this, 2));
         } else {
