@@ -53,7 +53,7 @@ public class NewsRepository {
 
     public Completable deleteByTitle(String title){
         return Completable
-                .fromCallable(() -> {
+                .fromCallable((Callable<Void>) () -> {
                     appDatabase.newsDao().deleteByTitle(title);
                     return null;
                 });

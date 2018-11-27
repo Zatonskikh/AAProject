@@ -91,7 +91,8 @@ public class NYRecyclerActivity extends AppCompatActivity {
                         showProgress(pb, false);
                         ad.replaceItems(converter.fromDatabase(newsEntityList));
                     }
-                });
+                }, throwable ->
+                        errorScreen.setVisibility(View.VISIBLE));
         disposables.add(disposable);
     }
 
