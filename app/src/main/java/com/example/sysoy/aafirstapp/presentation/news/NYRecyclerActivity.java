@@ -70,15 +70,15 @@ public class NYRecyclerActivity extends AppCompatActivity {
                 .doOnSubscribe(disposable ->
                         showProgress(pb, true))
                 .observeOn(AndroidSchedulers.mainThread())
+                .doAfterTerminate(() ->
+                        showProgress(pb, false))
                 .subscribe(
                         newsListDTO -> {
                             ad.replaceItems(newsListDTO.getNews());
                         },
                         t -> {
-                            showProgress(pb, false);
                             errorScreen.setVisibility(View.VISIBLE);
-                        },
-                        () -> showProgress(pb, false));
+                        });
     }
 
     @Override
