@@ -6,10 +6,13 @@ import android.widget.TextView;
 
 import com.example.sysoy.aafirstapp.R;
 
+import java.lang.ref.WeakReference;
+
 public class Task4P1 extends AppCompatActivity {
 
     private LeftLeg left;
     private RightLeg right;
+    private TextView mainText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,12 +24,15 @@ public class Task4P1 extends AppCompatActivity {
     public void onStart() {
         super.onStart();
         MyHandler handler = new MyHandler();
-        TextSetter textSetterLeft = new TextSetter("Left");
-        TextSetter textSetterRight = new TextSetter("Right");
-        left = new LeftLeg(handler, textSetterLeft);
-        right = new RightLeg(handler, textSetterRight);
+        mainText = findViewById(R.id.main_text);
+        left = new LeftLeg(handler, this);
+        right = new RightLeg(handler, this);
         new Thread(left).start();
         new Thread(right).start();
+    }
+
+    void setText(String text){
+        runOnUiThread(new TextSetter(text, mainText));
     }
 
     @Override
@@ -51,24 +57,30 @@ public class Task4P1 extends AppCompatActivity {
     private class LeftLeg implements Runnable {
 
         MyHandler handler;
-        TextSetter textSetter;
         private boolean isRunning = true;
+        WeakReference<Task4P1> mainActivity;
 
-        LeftLeg(MyHandler handler, TextSetter textSetter) {
+        LeftLeg(MyHandler handler, Task4P1 mainActivity) {
             this.handler = handler;
-            this.textSetter = textSetter;
+            this.mainActivity = new WeakReference<>(mainActivity);
         }
 
         void stop() {
             isRunning = false;
         }
 
+        void setText(){
+            if (mainActivity.get() != null){
+                mainActivity.get().setText("Left");
+            }
+        }
+
         @Override
         public void run() {
             while (isRunning) {
                 if (handler.getCurrent() == 0) {
-                    //System.out.println("Left step");
-                    runOnUiThread(textSetter);
+                    System.out.println("Left step");
+                    setText();
                     handler.setCurrent(1);
                 }
             }
@@ -79,41 +91,49 @@ public class Task4P1 extends AppCompatActivity {
     private class RightLeg implements Runnable {
 
         MyHandler handler;
-        TextSetter textSetter;
         private boolean isRunning = true;
+        WeakReference<Task4P1> mainActivity;
 
-        RightLeg(MyHandler handler, TextSetter textSetter) {
+        RightLeg(MyHandler handler, Task4P1 mainActivity) {
             this.handler = handler;
-            this.textSetter = textSetter;
+            this.mainActivity = new WeakReference<>(mainActivity);
         }
 
         void stop() {
             isRunning = false;
         }
 
+        void setText(){
+            if (mainActivity.get() != null){
+                mainActivity.get().setText("Right");
+            }
+        }
+
         @Override
         public void run() {
             while (isRunning) {
                 if (handler.getCurrent() == 1) {
-                    //System.out.println("Right step");
-                    runOnUiThread(textSetter);
+                    System.out.println("Right step");
+                    setText();
                     handler.setCurrent(0);
                 }
             }
         }
     }
 
-    private class TextSetter implements Runnable {
+    private class TextSetter implements Runnable  {
         String text;
+        WeakReference<TextView> tv;
 
-        TextSetter(String text) {
+        TextSetter(String text, TextView tv) {
             this.text = text;
+            this.tv = new WeakReference<>(tv);
         }
-
         @Override
         public void run() {
-            TextView tv = findViewById(R.id.main_text);
-            tv.setText(text);
+            if (tv.get() != null){
+                tv.get().setText(text);
+            }
         }
     }
 }
