@@ -25,13 +25,14 @@ public class NYDetailsActivity extends AppCompatActivity {
 
     AppCompatEditText category;
 
-    /**Notice! This field is not EditText cause I misunderstood this slide
-    *https://docs.google.com/presentation/d/1cQ4W7FtwM2vJXWA_mPF8rltga4GK0TyF0d4Q1e4SXp0/edit#slide=id.g2a0c37941d_0_65
-    *and used 'title' as PrimaryKey.
+    /**
+     * Notice! This field is not EditText cause I misunderstood this slide
+     * https://docs.google.com/presentation/d/1cQ4W7FtwM2vJXWA_mPF8rltga4GK0TyF0d4Q1e4SXp0/edit#slide=id.g2a0c37941d_0_65
+     * and used 'title' as PrimaryKey.
      * To be honest, I still don't understand what I should have used as the primary key because it's not very obvious.
      * btw this isn't the main purpose of this task so I don't think it would be a big problem :)
      * Also this produce some unexpected behaviour:
-     *  If news are related to several categories only one can be stored in database per loading
+     * If news are related to several categories only one can be stored in database per loading
      */
     AppCompatTextView title;
     AppCompatEditText abstractNews;
@@ -54,7 +55,7 @@ public class NYDetailsActivity extends AppCompatActivity {
         initToolbarElements();
     }
 
-    private void initScreen(){
+    private void initScreen() {
         toolbar = findViewById(R.id.toolbarer);
         setSupportActionBar(toolbar);
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp);
@@ -73,22 +74,22 @@ public class NYDetailsActivity extends AppCompatActivity {
         loadDetails();
     }
 
-    private void disableEditor(){
+    private void disableEditor() {
         category.setEnabled(false);
         abstractNews.setEnabled(false);
         date.setEnabled(false);
     }
 
-    private void enableEditor(){
+    private void enableEditor() {
         category.setEnabled(true);
         abstractNews.setEnabled(true);
         date.setEnabled(true);
     }
 
-    private void loadDetails(){
+    private void loadDetails() {
         Disposable disposable =
                 newsRepository
-                        .getById(getIntent().getStringExtra("title"))
+                        .getById(getIntent().getStringExtra("id"))
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(newsEntityList -> {
@@ -106,14 +107,14 @@ public class NYDetailsActivity extends AppCompatActivity {
         disposables.add(disposable);
     }
 
-    private void initToolbarElements(){
+    private void initToolbarElements() {
         AppCompatImageButton delete = findViewById(R.id.delete);
         AppCompatImageButton edit = findViewById(R.id.edit);
         AppCompatImageButton save = findViewById(R.id.save);
         delete.setOnClickListener(view -> {
             Disposable disposable =
                     newsRepository
-                            .deleteByTitle(getIntent().getStringExtra("title"))
+                            .deleteById(getIntent().getStringExtra("id"))
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe();
@@ -140,10 +141,10 @@ public class NYDetailsActivity extends AppCompatActivity {
             );
             Disposable disposable =
                     newsRepository
-                    .replaceItem(converter.toDatabase(newsItem, type))
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe();
+                            .replaceItem(converter.toDatabase(newsItem, type))
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe();
             disposables.add(disposable);
         });
     }
@@ -151,7 +152,8 @@ public class NYDetailsActivity extends AppCompatActivity {
     private void finishActivity(String exit_code) {
         Intent intent = new Intent();
         intent.putExtra("exit_code", exit_code);
-        intent.putExtra("title", getIntent().getStringExtra("title"));
+        intent.putExtra("title", getIntent().getStringExtra("id").substring(type == null ? 0 : type.length()));
+        intent.putExtra("type", type);
         setResult(RESULT_OK, intent);
         finish();
     }
@@ -166,7 +168,7 @@ public class NYDetailsActivity extends AppCompatActivity {
     public void onBackPressed() {
         if (isEdited) {
             finishActivity("edited");
-        }else {
+        } else {
             finishActivity("");
         }
     }

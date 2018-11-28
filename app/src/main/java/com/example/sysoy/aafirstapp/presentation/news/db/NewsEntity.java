@@ -15,6 +15,10 @@ public class NewsEntity {
 
     @NonNull
     @PrimaryKey
+    @ColumnInfo(name="id")
+    private String id;
+
+    @NonNull
     @ColumnInfo(name = "title")
     private String title;
 
@@ -93,5 +97,14 @@ public class NewsEntity {
 
     public void setType(@NonNull String type) {
         this.type = type;
+    }
+
+    @NonNull
+    public String getId() {
+        return id;
+    }
+
+    public void setId(@NonNull String id) {
+        this.id = id;
     }
 }

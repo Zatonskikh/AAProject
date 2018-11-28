@@ -20,11 +20,11 @@ public interface NewsDao {
     @Query("SELECT * FROM news")
     List<NewsEntity> getAll();
 
-    @Query("SELECT * FROM news WHERE type IN (:types)")
-    List<NewsEntity> loadAllByIds(String[] types);
+    @Query("SELECT * FROM news WHERE type = :type")
+    List<NewsEntity> loadAllByIds(String type);
 
-    @Query("SELECT * FROM news WHERE title = :title")
-    NewsEntity getNewsById(String title);
+    @Query("SELECT * FROM news WHERE id = :id")
+    NewsEntity getNewsById(String id);
 
     @Update(onConflict = REPLACE)
     void update(NewsEntity news);
@@ -36,10 +36,10 @@ public interface NewsDao {
     void insert(NewsEntity news);
 
     @Query("DELETE FROM news WHERE type = :type")
-    void deleteById(String type);
+    void deleteByType(String type);
 
-    @Query("DELETE FROM news WHERE title = :title")
-    void deleteByTitle(String title);
+    @Query("DELETE FROM news WHERE title = :id")
+    void deleteById(String id);
 
     @Delete
     void delete(NewsEntity news);
