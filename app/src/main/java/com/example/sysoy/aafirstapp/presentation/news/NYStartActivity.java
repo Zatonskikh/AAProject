@@ -3,25 +3,19 @@ package com.example.sysoy.aafirstapp.presentation.news;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.storage.StorageManager;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatButton;
-import android.support.v7.widget.AppCompatImageView;
 
-import com.bumptech.glide.Glide;
 import com.example.sysoy.aafirstapp.R;
+import com.example.sysoy.aafirstapp.presentation.news.app_fragments.NewsFragment;
+import com.example.sysoy.aafirstapp.presentation.news.app_fragments.StartFragment;
 
-import java.util.concurrent.TimeUnit;
-
-import io.reactivex.Completable;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.disposables.Disposable;
 import me.relex.circleindicator.CircleIndicator;
 
 public class NYStartActivity extends AppCompatActivity {
@@ -81,7 +75,7 @@ public class NYStartActivity extends AppCompatActivity {
     }
 
     private void startSecondActivity() {
-        startActivity(new Intent(this, NYRecyclerActivity.class));
+        startActivity(new Intent(this, NYFragmentActivity.class));
         finish();
     }
 

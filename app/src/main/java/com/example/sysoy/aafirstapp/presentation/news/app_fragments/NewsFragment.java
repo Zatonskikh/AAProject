@@ -1,10 +1,14 @@
-package com.example.sysoy.aafirstapp.presentation.news;
+package com.example.sysoy.aafirstapp.presentation.news.app_fragments;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.os.strictmode.WebViewMethodCalledOnWrongThreadViolation;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatSpinner;
@@ -13,7 +17,9 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
@@ -22,6 +28,7 @@ import android.widget.ProgressBar;
 import com.example.sysoy.aafirstapp.R;
 import com.example.sysoy.aafirstapp.models.network.NewsApi;
 import com.example.sysoy.aafirstapp.presentation.about.AboutActivity;
+import com.example.sysoy.aafirstapp.presentation.news.NYDetailsActivity;
 import com.example.sysoy.aafirstapp.presentation.news.adapter.NYTimesAdapter;
 import com.example.sysoy.aafirstapp.presentation.news.db.NewsRepository;
 import com.example.sysoy.aafirstapp.presentation.news.helpers.Converter;
@@ -33,7 +40,18 @@ import io.reactivex.schedulers.Schedulers;
 
 import static android.support.constraint.Constraints.TAG;
 
-public class NYRecyclerActivity extends AppCompatActivity {
+public class NewsFragment extends Fragment {
+
+//    private static final String ARGS_POSITION = "args:position";
+
+    public static NewsFragment newInstance() {
+
+        Bundle args = new Bundle();
+//        args.putInt(ARGS_POSITION, position);
+        NewsFragment fragment = new NewsFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     private CompositeDisposable disposables = new CompositeDisposable();
     private ProgressBar pb;
@@ -46,29 +64,31 @@ public class NYRecyclerActivity extends AppCompatActivity {
 
     private final NYTimesAdapter.OnItemClickListener clickListener
             = newsItem -> {
-        Intent intent = new Intent(this, NYDetailsActivity.class);
+        Intent intent = new Intent(this.getContext(), NYDetailsActivity.class);
         intent.putExtra("id", spinner.getSelectedItem().toString().concat(newsItem.getTitle()));
         startActivityForResult(intent, 1);
     };
 
-    private void initScreen() {
-        newsRepository = new NewsRepository(getApplicationContext());
-        RecyclerView rw = findViewById(R.id.rw);
-        AppCompatButton retryButton = findViewById(R.id.button_retry);
-        errorScreen = findViewById(R.id.error_message);
-        pb = findViewById(R.id.recycler_progress);
-        fab = findViewById(R.id.reload);
-        spinner = findViewById(R.id.spinner);
-        retryButton.setOnClickListener(view -> {
+
+    private void initScreen(View view) {
+        Context context = view.getContext();
+        newsRepository = new NewsRepository(context);
+        RecyclerView rw = view.findViewById(R.id.rw);
+        AppCompatButton retryButton = view.findViewById(R.id.button_retry);
+        errorScreen = view.findViewById(R.id.error_message);
+        pb = view.findViewById(R.id.recycler_progress);
+        fab = view.findViewById(R.id.reload);
+        spinner = view.findViewById(R.id.spinner);
+        retryButton.setOnClickListener(lambda_view -> {
             checkDbAndLoad(spinner.getSelectedItem().toString());
             errorScreen.setVisibility(View.GONE);
         });
-        fab.setOnClickListener(view -> loadNews(spinner.getSelectedItem().toString()));
-        ad = new NYTimesAdapter(clickListener, getApplicationContext());
+        fab.setOnClickListener(lambda_view -> loadNews(spinner.getSelectedItem().toString()));
+        ad = new NYTimesAdapter(clickListener, context);
         if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            rw.setLayoutManager(new GridLayoutManager(this, 2));
+            rw.setLayoutManager(new GridLayoutManager(context, 2));
         } else {
-            rw.setLayoutManager(new LinearLayoutManager(this));
+            rw.setLayoutManager(new LinearLayoutManager(context));
         }
         rw.setAdapter(ad);
     }
@@ -123,13 +143,13 @@ public class NYRecyclerActivity extends AppCompatActivity {
                         () -> showProgress(pb, false)));
     }
 
-    private void initToolbar() {
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        findViewById(R.id.ic_info).setOnClickListener(view -> AboutActivity.start(NYRecyclerActivity.this));
-        AppCompatSpinner spinner = findViewById(R.id.spinner);
+    private void initToolbar(View view) {
+        Toolbar toolbar = view.findViewById(R.id.toolbar);
+        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+        view.findViewById(R.id.ic_info).setOnClickListener(lambda_view -> AboutActivity.start(view.getContext()));
+        AppCompatSpinner spinner = view.findViewById(R.id.spinner);
         ArrayAdapter<String> arrayAdapter
-                = new ArrayAdapter<>(this, R.layout.spinner_item,
+                = new ArrayAdapter<>(view.getContext(), R.layout.spinner_item,
                 getResources().getStringArray(R.array.categories));
         spinner.setAdapter(arrayAdapter);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -152,7 +172,7 @@ public class NYRecyclerActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if (data != null && ad.getItemCount() != 0) {
             if (data.getStringExtra("exit_code").equals("deleted")){
                 ad.removeAt(data.getStringExtra("title"));
@@ -170,17 +190,18 @@ public class NYRecyclerActivity extends AppCompatActivity {
         }
     }
 
+    @Nullable
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.recycle_news_activity);
-        initToolbar();
-        initScreen();
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.recycle_news_fragment, container, false);
+        initToolbar(view);
+        initScreen(view);
+        return view;
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
+    public void onDestroyView() {
+        super.onDestroyView();
         disposables.dispose();
     }
 }

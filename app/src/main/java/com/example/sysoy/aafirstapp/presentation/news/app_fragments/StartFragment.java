@@ -1,4 +1,4 @@
-package com.example.sysoy.aafirstapp.presentation.news;
+package com.example.sysoy.aafirstapp.presentation.news.app_fragments;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
