@@ -72,7 +72,8 @@ public class NewsFragment extends Fragment {
 
     private void initScreen(View view) {
         Context context = view.getContext();
-        newsRepository = new NewsRepository(context);
+        Context applicationContext = getActivity().getApplicationContext();
+        newsRepository = new NewsRepository(applicationContext);
         RecyclerView rw = view.findViewById(R.id.rw);
         AppCompatButton retryButton = view.findViewById(R.id.button_retry);
         errorScreen = view.findViewById(R.id.error_message);
@@ -84,7 +85,7 @@ public class NewsFragment extends Fragment {
             errorScreen.setVisibility(View.GONE);
         });
         fab.setOnClickListener(lambda_view -> loadNews(spinner.getSelectedItem().toString()));
-        ad = new NYTimesAdapter(clickListener, context);
+        ad = new NYTimesAdapter(clickListener, applicationContext);
         if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
             rw.setLayoutManager(new GridLayoutManager(context, 2));
         } else {
