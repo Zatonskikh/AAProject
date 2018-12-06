@@ -20,7 +20,7 @@ public class NewsRepository {
         return Completable.fromCallable((Callable<Void>) () -> {
             NewsEntity[] newsArray = news
                     .toArray(new NewsEntity[news.size()]);
-            appDatabase.newsDao().deleteById(news.get(0).getType());
+            appDatabase.newsDao().deleteByType(news.get(0).getType());
             appDatabase.newsDao().insertAll(newsArray);
             return null;
         });
@@ -37,24 +37,24 @@ public class NewsRepository {
         return Observable.fromCallable(() -> appDatabase.newsDao().getAll());
     }
 
-    public Observable<List<NewsEntity>> getById(String[] type){
+    public Observable<List<NewsEntity>> getByType(String type){
         return Observable
                 .fromCallable(() -> appDatabase
                         .newsDao()
                         .loadAllByIds(type));
     }
 
-    public Observable<NewsEntity> getById(String title){
+    public Observable<NewsEntity> getById(String id){
         return Observable
                 .fromCallable(() -> appDatabase
                         .newsDao()
-                        .getNewsById(title));
+                        .getNewsById(id));
     }
 
-    public Completable deleteByTitle(String title){
+    public Completable deleteById(String id){
         return Completable
-                .fromCallable(() -> {
-                    appDatabase.newsDao().deleteByTitle(title);
+                .fromCallable((Callable<Void>) () -> {
+                    appDatabase.newsDao().deleteById(id);
                     return null;
                 });
     }

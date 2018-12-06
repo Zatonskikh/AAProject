@@ -19,6 +19,7 @@ public class Converter {
             newsEntity.setSubSection(news.getCategory());
             newsEntity.setTitle(news.getTitle());
             newsEntity.setUrl(news.getUrlToFull());
+            newsEntity.setId(type.concat(news.getTitle()));
         return newsEntity;
     }
 
@@ -49,7 +50,7 @@ public class Converter {
         return items;
     }
 
-    public  NewsItem fromDTO(NewsItemDTO news) {
+    private NewsItem fromDTO(NewsItemDTO news) {
         String multimedia = news.getMultimedia().size() != 0 ? news.getMultimedia().get(0).getUrl() : "";
         return new NewsItem(
                 news.getTitle(),

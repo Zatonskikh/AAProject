@@ -19,7 +19,6 @@ import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
-import com.bumptech.glide.Glide;
 import com.example.sysoy.aafirstapp.R;
 import com.example.sysoy.aafirstapp.models.network.NewsApi;
 import com.example.sysoy.aafirstapp.presentation.about.AboutActivity;
@@ -48,7 +47,7 @@ public class NYRecyclerActivity extends AppCompatActivity {
     private final NYTimesAdapter.OnItemClickListener clickListener
             = newsItem -> {
         Intent intent = new Intent(this, NYDetailsActivity.class);
-        intent.putExtra("title", newsItem.getTitle());
+        intent.putExtra("id", spinner.getSelectedItem().toString().concat(newsItem.getTitle()));
         startActivityForResult(intent, 1);
     };
 
@@ -61,8 +60,7 @@ public class NYRecyclerActivity extends AppCompatActivity {
         fab = findViewById(R.id.reload);
         spinner = findViewById(R.id.spinner);
         retryButton.setOnClickListener(view -> {
-            String[] titles = {spinner.getSelectedItem().toString()};
-            checkDbAndLoad(titles);
+            checkDbAndLoad(spinner.getSelectedItem().toString());
             errorScreen.setVisibility(View.GONE);
         });
         fab.setOnClickListener(view -> loadNews(spinner.getSelectedItem().toString()));
@@ -75,8 +73,8 @@ public class NYRecyclerActivity extends AppCompatActivity {
         rw.setAdapter(ad);
     }
 
-    private void checkDbAndLoad(String[] titles) {
-        Disposable disposable = newsRepository.getById(titles)
+    private void checkDbAndLoad(String type) {
+        Disposable disposable = newsRepository.getByType(type)
                 .subscribeOn(Schedulers.io())
                 .doOnSubscribe(disposable1 -> {
                     fab.hide();
@@ -85,13 +83,14 @@ public class NYRecyclerActivity extends AppCompatActivity {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(newsEntityList -> {
                     if (newsEntityList.size() == 0) {
-                        loadNews(titles[0]);
+                        loadNews(type);
                     } else {
                         fab.show();
                         showProgress(pb, false);
                         ad.replaceItems(converter.fromDatabase(newsEntityList));
                     }
-                });
+                }, throwable ->
+                        errorScreen.setVisibility(View.VISIBLE));
         disposables.add(disposable);
     }
 
@@ -136,8 +135,7 @@ public class NYRecyclerActivity extends AppCompatActivity {
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                String[] item = {arrayAdapter.getItem(i)};
-                checkDbAndLoad(item);
+                checkDbAndLoad(arrayAdapter.getItem(i));
                 errorScreen.setVisibility(View.GONE);
             }
 
@@ -160,8 +158,9 @@ public class NYRecyclerActivity extends AppCompatActivity {
                 ad.removeAt(data.getStringExtra("title"));
             } else if(data.getStringExtra("exit_code").equals("edited")){
                 String title = data.getStringExtra("title");
+                String type = data.getStringExtra("type");
                 Disposable disposable =
-                        newsRepository.getById(title)
+                        newsRepository.getById(type.concat(title))
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(newsEntity -> ad.editItem(title, converter.fromDatabase(newsEntity)),
