@@ -3,57 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".presentation.news.NYDetailsActivity"
+    tools:context=".presentation.news.app_fragments.NYDetailsFragment"
     android:orientation="vertical">
-
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbarer"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="@color/dark"
-        android:clickable="true"
-        android:focusable="true"
-        android:focusableInTouchMode="true"
-        app:title="@string/default_text"
-        app:titleTextColor="@color/white"
-        app:titleTextAppearance="@dimen/default_text_size">
-
-        <android.support.v7.widget.AppCompatImageButton
-            android:id="@+id/save"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:background="@color/transparent"
-            android:src="@drawable/ic_save_black_24dp"
-            android:padding="0dp"
-            android:layout_gravity="end"
-            android:layout_marginEnd="15dp"
-            android:visibility="gone"
-            />
-
-        <android.support.v7.widget.AppCompatImageButton
-            android:id="@+id/edit"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:background="@color/transparent"
-            android:src="@drawable/ic_edit_black_24dp"
-            android:padding="0dp"
-            android:layout_gravity="end"
-            android:layout_marginEnd="15dp"
-            />
-
-        <android.support.v7.widget.AppCompatImageButton
-            android:id="@+id/delete"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:background="@color/transparent"
-            android:src="@drawable/ic_delete_white_24dp"
-            android:padding="0dp"
-            android:layout_gravity="end"
-            android:layout_marginEnd="15dp"
-            />
-
-    </android.support.v7.widget.Toolbar>
 
     <include
         layout="@layout/error_screen"

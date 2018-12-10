@@ -73,14 +73,20 @@
 
     </android.support.v7.widget.Toolbar>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
     <FrameLayout
         android:id="@+id/news_fragment"
-        android:layout_width="match_parent"
+        android:layout_width="200dp"
         android:layout_height="match_parent"/>
 
     <FrameLayout
         android:id="@+id/news_details"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"/>
+    </LinearLayout>
 
 </LinearLayout>

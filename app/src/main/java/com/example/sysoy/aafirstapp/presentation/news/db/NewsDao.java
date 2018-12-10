@@ -38,7 +38,7 @@ public interface NewsDao {
     @Query("DELETE FROM news WHERE type = :type")
     void deleteByType(String type);
 
-    @Query("DELETE FROM news WHERE title = :id")
+    @Query("DELETE FROM news WHERE id = :id")
     void deleteById(String id);
 
     @Delete

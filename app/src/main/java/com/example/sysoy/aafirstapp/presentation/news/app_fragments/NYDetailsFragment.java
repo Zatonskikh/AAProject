@@ -1,14 +1,19 @@
-package com.example.sysoy.aafirstapp.presentation.news;
+package com.example.sysoy.aafirstapp.presentation.news.app_fragments;
 
-import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.AppCompatImageButton;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.example.sysoy.aafirstapp.R;
@@ -21,19 +26,10 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
-public class NYDetailsActivity extends AppCompatActivity {
+public class NYDetailsFragment extends Fragment {
 
     AppCompatEditText category;
 
-    /**
-     * Notice! This field is not EditText cause I misunderstood this slide
-     * https://docs.google.com/presentation/d/1cQ4W7FtwM2vJXWA_mPF8rltga4GK0TyF0d4Q1e4SXp0/edit#slide=id.g2a0c37941d_0_65
-     * and used 'title' as PrimaryKey.
-     * To be honest, I still don't understand what I should have used as the primary key because it's not very obvious.
-     * btw this isn't the main purpose of this task so I don't think it would be a big problem :)
-     * Also this produce some unexpected behaviour:
-     * If news are related to several categories only one can be stored in database per loading
-     */
     AppCompatTextView title;
     AppCompatEditText abstractNews;
     AppCompatEditText date;
@@ -47,27 +43,31 @@ public class NYDetailsActivity extends AppCompatActivity {
     boolean isEdited = false;
     private CompositeDisposable disposables = new CompositeDisposable();
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.ny_details);
-        initScreen();
-        initToolbarElements();
-    }
+    public static NYDetailsFragment newInstance(String id){
+    Bundle args = new Bundle();
+    args.putString("id", id);
+    NYDetailsFragment fragment = new NYDetailsFragment();
+        fragment.setArguments(args);
+        return fragment;
+}
 
-    private void initScreen() {
-        toolbar = findViewById(R.id.toolbarer);
-        setSupportActionBar(toolbar);
-        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp);
-        toolbar.setNavigationOnClickListener(view -> onBackPressed());
-        newsRepository = new NewsRepository(this);
-        category = findViewById(R.id.category);
-        title = findViewById(R.id.header);
-        abstractNews = findViewById(R.id.body);
-        date = findViewById(R.id.date);
-        errorScreen = findViewById(R.id.error_screen);
-        retryButton = findViewById(R.id.button_retry);
-        retryButton.setOnClickListener(view -> {
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.ny_details, container, false);
+        initScreen(view);
+        initToolbarElements();
+        return view;
+    }
+    private void initScreen(View view) {
+        newsRepository = new NewsRepository(getActivity().getApplicationContext());
+        category = view.findViewById(R.id.category);
+        title = view.findViewById(R.id.header);
+        abstractNews = view.findViewById(R.id.body);
+        date = view.findViewById(R.id.date);
+        errorScreen = view.findViewById(R.id.error_screen);
+        retryButton = view.findViewById(R.id.button_retry);
+        retryButton.setOnClickListener(lambda_view -> {
             loadDetails();
             errorScreen.setVisibility(View.GONE);
         });
@@ -89,7 +89,7 @@ public class NYDetailsActivity extends AppCompatActivity {
     private void loadDetails() {
         Disposable disposable =
                 newsRepository
-                        .getById(getIntent().getStringExtra("id"))
+                        .getById(getArguments().getString("id", ""))
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(newsEntityList -> {
@@ -108,27 +108,30 @@ public class NYDetailsActivity extends AppCompatActivity {
     }
 
     private void initToolbarElements() {
-        AppCompatImageButton delete = findViewById(R.id.delete);
-        AppCompatImageButton edit = findViewById(R.id.edit);
-        AppCompatImageButton save = findViewById(R.id.save);
-        delete.setOnClickListener(view -> {
+        FragmentActivity activity = getActivity();
+        toolbar = activity.findViewById(R.id.toolbar);
+        String id =getArguments().getString("id", "");
+        AppCompatImageButton delete = activity.findViewById(R.id.delete);
+        AppCompatImageButton edit = activity.findViewById(R.id.edit);
+        AppCompatImageButton save = activity.findViewById(R.id.save);
+        delete.setOnClickListener(lambda_view -> {
             Disposable disposable =
                     newsRepository
-                            .deleteById(getIntent().getStringExtra("id"))
+                            .deleteById(id)
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe();
             disposables.add(disposable);
-            finishActivity("deleted");
+            activity.onBackPressed();
         });
-        edit.setOnClickListener(view -> {
-            view.setVisibility(View.GONE);
+        edit.setOnClickListener(lambda_view  -> {
+            lambda_view.setVisibility(View.GONE);
             save.setVisibility(View.VISIBLE);
             enableEditor();
         });
-        save.setOnClickListener(view -> {
+        save.setOnClickListener(lambda_view  -> {
             isEdited = true;
-            view.setVisibility(View.GONE);
+            lambda_view.setVisibility(View.GONE);
             edit.setVisibility(View.VISIBLE);
             disableEditor();
             NewsItem newsItem = new NewsItem(
@@ -149,27 +152,9 @@ public class NYDetailsActivity extends AppCompatActivity {
         });
     }
 
-    private void finishActivity(String exit_code) {
-        Intent intent = new Intent();
-        intent.putExtra("exit_code", exit_code);
-        intent.putExtra("title", getIntent().getStringExtra("id").substring(type == null ? 0 : type.length()));
-        intent.putExtra("type", type);
-        setResult(RESULT_OK, intent);
-        finish();
-    }
-
     @Override
-    protected void onDestroy() {
+    public void onDestroy() {
         super.onDestroy();
-        if (isFinishing()) disposables.dispose();
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (isEdited) {
-            finishActivity("edited");
-        } else {
-            finishActivity("");
-        }
+        disposables.dispose();
     }
 }

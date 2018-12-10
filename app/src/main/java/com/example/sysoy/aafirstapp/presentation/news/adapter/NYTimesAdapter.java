@@ -72,7 +72,6 @@ public class NYTimesAdapter extends Adapter<NewsViewHolder> {
         int position = newsList.indexOf(resultList.get(0));
         newsList.remove(position);
         notifyItemRemoved(position);
-        notifyItemRangeChanged(position, newsList.size());
     }
 
     public void editItem(String title, NewsItem item){
@@ -80,9 +79,7 @@ public class NYTimesAdapter extends Adapter<NewsViewHolder> {
                 .filter(newsItem -> newsItem.getTitle().equals(title))
                 .collect(Collectors.toList());
         int position = newsList.indexOf(resultList.get(0));
-        newsList.remove(position);
-        newsList.add(position, item);
-        notifyItemRemoved(position);
+        newsList.set(position, item);
         notifyItemRangeChanged(position, newsList.size());
         notifyDataSetChanged();
     }

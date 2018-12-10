@@ -16,7 +16,7 @@
             android:windowSoftInputMode="adjustResize">
         </activity>
         <activity
-            android:name=".presentation.news.NYDetailsActivity"
+            android:name=".presentation.news.app_fragments.NYDetailsFragment"
             android:windowSoftInputMode="adjustResize">
 
             <intent-filter>
